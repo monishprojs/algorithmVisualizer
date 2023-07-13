@@ -1,0 +1,12 @@
+.container{
+    position: absolute;
+    left : 20vw;
+    bottom: 10vh;
+}
+
+.bar{
+    width: 7px;
+    background-color: lightblue;
+    display: inline-block;
+    margin: 0 1px;
+}
