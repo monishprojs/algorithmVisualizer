@@ -2,15 +2,17 @@ import React from 'react';
 import './SortingVisualizer.css';
 import { useEffect, useState } from 'react';
 import getMergeSortAnimations from '../sortingAlgorithms/mergeSort.js';
+import getQuickSortAnimations from '../sortingAlgorithms/quickSort.js';
+import getHeapSortAnimations from '../sortingAlgorithms/heapSort.js';
 
 function SortingVisualizer(){
 
 
     const[nums,setNums] = useState([])
 
-    const PRIMARY_COLOR = 'turquoise';
+    const PRIMARY_COLOR = 'lightblue';
     const SECONDARY_COLOR = 'red';
-    const ANIMATION_SPEED_MS = 1;
+    const ANIMATION_SPEED_MS = 10;
     
     function resetArray(){
         let tmp = [];
@@ -45,11 +47,67 @@ function SortingVisualizer(){
     }
 
     function quickSort() {
+        const ans = getQuickSortAnimations([...nums])
+        const sorted = ans[0];
+        const animations = ans[1];
+        console.log(sorted);
+        console.log(animations);
+        for (let i = 0; i < animations.length; i++) {
+            const arrayBars = document.getElementsByClassName('bar');
 
+            //odd indices in animations mean they are to be highlighted, even means their heights are to be switched and colors to return back to normal
+            const isColorChange = i % 3 !== 2;
+
+            //case where we are comparing them to swap, so we highlight them in red
+            if (isColorChange) {
+                const [barOneIdx, barTwoIdx] = animations[i];
+                const barOneStyle = arrayBars[barOneIdx].style;
+                const barTwoStyle = arrayBars[barTwoIdx].style;
+                const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
+                setTimeout(() => {
+                    barOneStyle.backgroundColor = color;
+                    barTwoStyle.backgroundColor = color;
+                }, i * ANIMATION_SPEED_MS);
+            } 
+            //now we swap their hights and unhighlight them
+            else {
+                setTimeout(() => {
+                    const [barOneIdx, newHeight] = animations[i];
+                    const barOneStyle = arrayBars[barOneIdx].style;
+                    barOneStyle.height = `${newHeight}px`;
+                }, i * ANIMATION_SPEED_MS);
+            }
+        }
     }
 
     function heapSort() {
+        const animations = getHeapSortAnimations([...nums])
+        for (let i = 0; i < animations.length; i++) {
+            const arrayBars = document.getElementsByClassName('bar');
 
+            //odd indices in animations mean they are to be highlighted, even means their heights are to be switched and colors to return back to normal
+            const isColorChange = i % 3 !== 2;
+
+            //case where we are comparing them to swap, so we highlight them in red
+            if (isColorChange) {
+                const [barOneIdx, barTwoIdx] = animations[i];
+                const barOneStyle = arrayBars[barOneIdx].style;
+                const barTwoStyle = arrayBars[barTwoIdx].style;
+                const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
+                setTimeout(() => {
+                    barOneStyle.backgroundColor = color;
+                    barTwoStyle.backgroundColor = color;
+                }, i * ANIMATION_SPEED_MS);
+            }
+            //now we swap their hights and unhighlight them
+            else {
+                setTimeout(() => {
+                    const [barOneIdx, newHeight] = animations[i];
+                    const barOneStyle = arrayBars[barOneIdx].style;
+                    barOneStyle.height = `${newHeight}px`;
+                }, i * ANIMATION_SPEED_MS);
+            }
+        }
     }
 
     function bubbleSort() {
