@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import SortingVisualizer from './SortingVisualizer/SortingVisualizer';
 import SearchingVisualizer from './searchingVisualizer/serachingVisualizer.jsx';
+import SudokuVisualizer from './sudokuVisualizer/sudokuVisualizer';
 
 import {
   BrowserRouter as Router,
@@ -19,6 +20,8 @@ function App() {
           <Route path="/searching" element={<SearchingVisualizer />} />
 
           <Route path="/sorting" element={<SortingVisualizer/>} />
+
+          <Route path="/sudoku" element={<SudokuVisualizer />} />
 
           <Route path="/" element={<Navigate replace to="/sorting" />} />
         </Routes>

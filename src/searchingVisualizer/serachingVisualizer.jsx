@@ -6,8 +6,13 @@ import { useNavigate } from "react-router-dom";
 
 function SearchingVisualizer(){
     const navigate = useNavigate();
+
     function goSort() {
         navigate("/sorting");
+    }
+
+    function goSudoku(){
+        navigate("/sudoku");
     }
 
     const [Sorted,setSorted] = useState([]);
@@ -88,7 +93,8 @@ function SearchingVisualizer(){
 
     return (
         <div className='container'>
-            <button onClick={goSort} className="homeButton">Sorting Algorithms</button>
+            <button onClick={goSort}>Sorting Algorithms</button>
+            <button onClick={goSudoku}>Sudoku Solver</button>
             <p>Result:</p>
             <p id='res'>{res}</p>
             <p>Left: {left},  Mid: {mid}, Right: {right}</p>

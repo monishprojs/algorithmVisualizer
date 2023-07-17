@@ -9,10 +9,14 @@ import { useNavigate } from "react-router-dom";
 function SortingVisualizer(){
 
     const navigate = useNavigate();
+
     function goSearch() {
         navigate("/searching");
     }
 
+    function goSudoku(){
+        navigate("/sudoku");
+    }
 
     const[nums,setNums] = useState([])
 
@@ -62,7 +66,7 @@ function SortingVisualizer(){
             const arrayBars = document.getElementsByClassName('bar');
 
             //odd indices in animations mean they are to be highlighted, even means their heights are to be switched and colors to return back to normal
-            const isColorChange = i % 3 !== 2;
+            const isColorChange = i % 2;
 
             //case where we are comparing them to swap, so we highlight them in red
             if (isColorChange) {
@@ -126,7 +130,8 @@ function SortingVisualizer(){
   
         return (
             <div className='container'>
-                <button onClick={goSearch} className="homeButton">Binary Search</button>
+                <button onClick={goSearch}>Binary Search</button>
+                <button onClick={goSudoku}>Sudoku Solver</button>
                 <br />
             {nums.map((value,index) => (
                 <div className='bar' 
