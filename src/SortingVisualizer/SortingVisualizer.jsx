@@ -4,8 +4,14 @@ import { useEffect, useState } from 'react';
 import getMergeSortAnimations from '../sortingAlgorithms/mergeSort.js';
 import getQuickSortAnimations from '../sortingAlgorithms/quickSort.js';
 import getHeapSortAnimations from '../sortingAlgorithms/heapSort.js';
+import { useNavigate } from "react-router-dom";
 
 function SortingVisualizer(){
+
+    const navigate = useNavigate();
+    function goSearch() {
+        navigate("/searching");
+    }
 
 
     const[nums,setNums] = useState([])
@@ -120,6 +126,8 @@ function SortingVisualizer(){
   
         return (
             <div className='container'>
+                <button onClick={goSearch} className="homeButton">Binary Search</button>
+                <br />
             {nums.map((value,index) => (
                 <div className='bar' 
                 key={index}

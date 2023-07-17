@@ -1,13 +1,28 @@
 import logo from './logo.svg';
 import './App.css';
-import SortingVisualizer from './SortingVisualizer/SortingVisualizer'
-import SearchingVisualizer from './searchingVisualizer/serachingVisualizer.jsx'
+import SortingVisualizer from './SortingVisualizer/SortingVisualizer';
+import SearchingVisualizer from './searchingVisualizer/serachingVisualizer.jsx';
+
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 //add pathfinder solver and sudoku
 function App() {
   return (
     <div className="App">
-      <SearchingVisualizer></SearchingVisualizer>
+      <Router>
+        <Routes>
+          <Route path="/searching" element={<SearchingVisualizer />} />
+
+          <Route path="/sorting" element={<SortingVisualizer/>} />
+
+          <Route path="/" element={<Navigate replace to="/sorting" />} />
+        </Routes>
+      </Router>
     </div>
   );
 }

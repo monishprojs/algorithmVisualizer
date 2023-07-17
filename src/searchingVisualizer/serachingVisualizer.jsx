@@ -2,8 +2,14 @@ import React from 'react';
 import './searchingVisualizer.css';
 import { useEffect, useState } from 'react';
 import getMergeSortAnimations from '../sortingAlgorithms/mergeSort';
+import { useNavigate } from "react-router-dom";
 
 function SearchingVisualizer(){
+    const navigate = useNavigate();
+    function goSort() {
+        navigate("/sorting");
+    }
+
     const [Sorted,setSorted] = useState([]);
     const [res,setRes] = useState("");
 
@@ -67,6 +73,7 @@ function SearchingVisualizer(){
 
     return (
         <div className='container'>
+            <button onClick={goSort} className="homeButton">Sorting Algorithms</button>
             <p>Result:</p>
             <p id='res'>{res}</p>
             {Sorted.map((value, index) => (
