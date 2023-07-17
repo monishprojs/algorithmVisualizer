@@ -25,28 +25,40 @@ function SudokuVisualizer(){
         ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
     ])
 
+    function resetBoard(){
+        for (let i = 0; i < board.length; ++i){
+            for (let j = 0; j < board.length; ++j){
+                editBoard(i,j,"_");
+            }
+        }
+    }
+
     //function to updates all the intial squares bassed of user input
     function fillSquares(){
+        resetBoard();
         const cells = document.getElementsByClassName('grid-cell');
         for (let i = 0; i < cells.length ; ++i){
-                console.log(cells[i]);
                 let indices = cells[i].id.split(".");
-                console.log(indices);
-                editBoard(indices[0],indices[1],cells[i].value);
+                if (cells[i].value > 0 && cells[i].value < 10){
+                editBoard(indices[0],indices[1],cells[i].value)
+                }
+                else{
+                editBoard(indices[0], indices[1], "_")
+                }
             }
         if (!checkValid()){
             alert("bad board");
         }
         else{
-            solve(0,0);
+            alert("good board");
         }
         }
     
 
     //function to edit a specific squares value in the board
     function editBoard(row,col,val){
-        if (val > 0 && val < 10){
-        let tmp = [...board]
+        if ((val > 0 && val < 10) || val === "_"){
+        let tmp = [...board];
         tmp[row][col] =  val;
         setBoard(tmp);
         }
@@ -113,7 +125,10 @@ function SudokuVisualizer(){
         return true
     }
 
-
+    function trySolve(){
+        solve(0,0);
+        console.log(board);
+    }
 
     //method to solve the board
     function solve(row,col){
@@ -130,25 +145,24 @@ function SudokuVisualizer(){
         }
         //check through all the values and see if they can be inserted
         for (let i = 1; i < 10; ++ i){
-            if (checkVal(row, col, i)){
-                editBoard(row,col,i);
+            if (checkVal(row, col, String(i))){
+                editBoard(row,col,String(i));
                 // check if the next square was able to filled(only then may this square keep its value)
-                // this happens for eveyr square till eventually all of them have been filled, hitting the base case at the start
+                // this happens for every square till eventually all of them have been filled, hitting the base case at the start
                 if (!solve(row, col + 1)){
                     editBoard(row, col, "_");
                 }
                 else{
                     break;
+                    }
                 }
-            
             }
-            // if square was unable to be filled return False
-            if (board[row][col] === "_"){
-                return false;
-            }
-            else{
-                return true;
-            }
+        // if square was unable to be filled return False
+        if (board[row][col] === "_") {
+            return false;
+        }
+        else {
+            return true;
         }
     }
 
@@ -167,7 +181,8 @@ function SudokuVisualizer(){
         </div>
         <br />
         <br />
-        <button onClick={fillSquares}>Start Solving</button>
+        <button onClick={resetBoard}>Reset Board</button>
+        <button onClick={trySolve}>Start Solving</button>
         </div>
     )
 }
