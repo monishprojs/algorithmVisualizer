@@ -37,6 +37,9 @@ function SudokuVisualizer(){
         if (!checkValid()){
             alert("bad board");
         }
+        else{
+            solve(0,0);
+        }
         }
     
 
@@ -100,7 +103,7 @@ function SudokuVisualizer(){
         let rowstart = (Math.floor((row / 3))) * 3;
         let colstart = (Math.floor((col / 3))) * 3;
         for (let i = 0; i < rowstart +3 ; ++ i){
-            for (let j = 0; i < colstart + 3; ++j){
+            for (let j = 0; j < colstart + 3; ++j){
                 if (board[i][j] === val){
                     return false;
                 }
@@ -151,7 +154,9 @@ function SudokuVisualizer(){
 
     return(
         <div>
-        <div className='container'>
+            <button onClick={goSort}>Sorting Algorithms</button>
+            <button onClick={goSearch}>Binary Search</button>
+        <div className='grid-container'>
             {board.map((row, rowIndex) => (
                 <div key={rowIndex} className="grid-row">
                     {row.map((cell, columnIndex) => (        
@@ -160,6 +165,8 @@ function SudokuVisualizer(){
                 </div>
             ))}
         </div>
+        <br />
+        <br />
         <button onClick={fillSquares}>Start Solving</button>
         </div>
     )
