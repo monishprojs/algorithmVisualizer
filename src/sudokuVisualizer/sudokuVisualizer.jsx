@@ -25,10 +25,28 @@ function SudokuVisualizer(){
         ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
     ])
 
+    //function to updates all the intial squares bassed of user input
+    function fillSquares(){
+        const cells = document.getElementsByClassName('grid-cell');
+        for (let i = 0; i < cells.length ; ++i){
+                console.log(cells[i]);
+                let indices = cells[i].id.split(".");
+                console.log(indices);
+                editBoard(indices[0],indices[1],cells[i].value);
+            }
+        if (!checkValid()){
+            alert("bad board");
+        }
+        }
+    
+
+    //function to edit a specific squares value in the board
     function editBoard(row,col,val){
+        if (val > 0 && val < 10){
         let tmp = [...board]
         tmp[row][col] =  val;
         setBoard(tmp);
+        }
     }
 
     // method to check iv whole board is valid
@@ -110,7 +128,7 @@ function SudokuVisualizer(){
         //check through all the values and see if they can be inserted
         for (let i = 1; i < 10; ++ i){
             if (checkVal(row, col, i)){
-                editBoard(row,col,i)
+                editBoard(row,col,i);
                 // check if the next square was able to filled(only then may this square keep its value)
                 // this happens for eveyr square till eventually all of them have been filled, hitting the base case at the start
                 if (!solve(row, col + 1)){
@@ -132,10 +150,17 @@ function SudokuVisualizer(){
     }
 
     return(
+        <div>
         <div className='container'>
-            <button onClick={goSearch}>Binary Search</button>
-            <button onClick={goSort}>Array Sorting Algorithms</button>
-            <button onClick={() => console.log(checkValid())}>Check</button>
+            {board.map((row, rowIndex) => (
+                <div key={rowIndex} className="grid-row">
+                    {row.map((cell, columnIndex) => (        
+                        <input className='grid-cell' key={`${rowIndex}.${columnIndex}`} id={`${rowIndex}.${columnIndex}`} type="text"/>
+                    ))}
+                </div>
+            ))}
+        </div>
+        <button onClick={fillSquares}>Start Solving</button>
         </div>
     )
 }

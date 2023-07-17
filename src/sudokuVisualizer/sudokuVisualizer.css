@@ -1,5 +1,18 @@
-.container{
-    position: absolute;
-    left : 20vw;
-    bottom: 10vh;
+.container {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 0px;
+}
+
+.grid-row {
+  display: flex;
+}
+
+.grid-cell {
+    width: 5vw;
+   height: auto;
+  flex: 1;
+  border: 1px solid black;
+  padding: 10px;
+  text-align: center;
 }

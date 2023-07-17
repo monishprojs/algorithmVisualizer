@@ -97,7 +97,7 @@ function SearchingVisualizer(){
             <button onClick={goSudoku}>Sudoku Solver</button>
             <p>Result:</p>
             <p id='res'>{res}</p>
-            <p>Left: {left},  Mid: {mid}, Right: {right}</p>
+            <p>Left Index: {left},  Mid Index: {mid}, Right Index: {right}</p>
             {Sorted.map((value, index) => (
                 <div className='square'
                     key={index}>
