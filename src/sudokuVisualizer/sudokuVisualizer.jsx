@@ -45,15 +45,18 @@ function SudokuVisualizer(){
             if (!(j in cols)) {
                 cols[j] = new Set();
             }
+            //map each square to a concatenated string of the floors of its indices
             if (!(String(Math.floor(i / 3)) + String(Math.floor(j / 3)) in squares)) {
                 squares[String(Math.floor(i / 3)) + String(Math.floor(j / 3))] = new Set();
             }
             if (board[i][j] === "_"){
                 continue;
             }
+            //check for duplicate in same row, column, and square
             if (rows[i].has(String(board[i][j])) || cols[j].has(String(board[i][j])) || squares[String(Math.floor(i / 3)) + String(Math.floor(j / 3))].has(String(board[i][j]))){
                 return false;
             }
+            //if not a duplicate, add it to the dictionary for later comparison
             else {
                 rows[i].add(String(board[i][j]));
                 cols[j].add(String(board[i][j]));
@@ -61,7 +64,7 @@ function SudokuVisualizer(){
             }
         }
     }
-    console.log(rows);
+    //if no duplicates were found in any rows, columns, or squares, return true
     return true;
     }
 
@@ -75,7 +78,7 @@ function SudokuVisualizer(){
             }
         }
 
-        //check square
+        //check squares
         let rowstart = (Math.floor((row / 3))) * 3;
         let colstart = (Math.floor((col / 3))) * 3;
         for (let i = 0; i < rowstart +3 ; ++ i){
