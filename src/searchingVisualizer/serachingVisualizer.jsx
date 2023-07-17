@@ -12,6 +12,9 @@ function SearchingVisualizer(){
 
     const [Sorted,setSorted] = useState([]);
     const [res,setRes] = useState("");
+    const [left,setLeft] = useState("");
+    const [right,setRight] = useState("");
+    const [mid,setMid] = useState("");
 
     function resetArray() {
         resetColors();
@@ -25,6 +28,9 @@ function SearchingVisualizer(){
 
     function resetColors(){
         setRes("");
+        setLeft("");
+        setRight("");
+        setMid("");
         const squares = document.getElementsByClassName('square');
         for (let i = 0; i < squares.length; i++){
             squares[i].style.backgroundColor = "lightblue";
@@ -43,6 +49,9 @@ function SearchingVisualizer(){
         let right = Sorted.length - 1;
         while (left <= right){
             let mid = Math.floor((left + right)/2);
+            setLeft(left);
+            setRight(right);
+            setMid(mid);
             const squares = document.getElementsByClassName('square');
             squares[left].style.backgroundColor = "red";
             squares[right].style.backgroundColor = "red";
@@ -59,10 +68,16 @@ function SearchingVisualizer(){
             }
             else{
                 squares[mid].style.backgroundColor = "green";
+                setLeft("");
+                setRight("");
+                setMid("");
                 setRes("Number found at index " + String(mid));
                 return;
             }
         }
+        setLeft("");
+        setRight("");
+        setMid("");
         setRes("Number Not Found");
     }
 
@@ -76,6 +91,7 @@ function SearchingVisualizer(){
             <button onClick={goSort} className="homeButton">Sorting Algorithms</button>
             <p>Result:</p>
             <p id='res'>{res}</p>
+            <p>Left: {left},  Mid: {mid}, Right: {right}</p>
             {Sorted.map((value, index) => (
                 <div className='square'
                     key={index}>
