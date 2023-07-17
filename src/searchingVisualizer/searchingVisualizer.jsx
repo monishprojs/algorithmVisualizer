@@ -60,7 +60,7 @@ function SearchingVisualizer(){
             const squares = document.getElementsByClassName('square');
             squares[left].style.backgroundColor = "red";
             squares[right].style.backgroundColor = "red";
-            squares[mid].style.backgroundColor = "green";
+            squares[mid].style.backgroundColor = "orange";
             await delay(2500);
             squares[left].style.backgroundColor = "lightblue";
             squares[right].style.backgroundColor = "lightblue";

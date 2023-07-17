@@ -13,6 +13,28 @@ function SudokuVisualizer(){
         navigate("/sorting");
     }
 
+    const [board,setBoard] = useState([
+        ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
+        ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
+        ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
+        ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
+        ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
+        ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
+        ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
+        ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
+        ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
+    ])
+
+    function editBoard(row,col,val){
+        let tmp = [...board]
+        tmp[row][col] =  val;
+        setBoard(tmp);
+    }
+
+    function solve(){
+
+    }
+
     return(
         <div className='container'>
             <button onClick={goSearch}>Binary Search</button>

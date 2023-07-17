@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import SortingVisualizer from './SortingVisualizer/SortingVisualizer';
-import SearchingVisualizer from './searchingVisualizer/serachingVisualizer.jsx';
+import SearchingVisualizer from './searchingVisualizer/searchingVisualizer.jsx';
 import SudokuVisualizer from './sudokuVisualizer/sudokuVisualizer';
 
 import {
