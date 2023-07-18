@@ -183,7 +183,7 @@ function SudokuVisualizer(){
 
 
     //method to solve the board
-    async function solve(row, col) {
+    async function solve(row, col, pause) {
         if (stopFlag) {
             return; // Stop the solver if the flag is set
         }
@@ -193,22 +193,22 @@ function SudokuVisualizer(){
         }
         // advance a row once you've hit all the columns
         if (col > board[0].length - 1) {
-            return solve(row + 1, 0);
+            return solve(row + 1, 0,pause);
         }
         // jump to the next square if the square is a pre-filled square
         if (board[row][col] !== "_") {
-            return solve(row, col + 1);
+            return solve(row, col + 1,pause);
         }
         // check through all the values and see if they can be inserted
         for (let i = 1; i < 10; ++i) {
             if (checkVal(row, col, String(i))) {
                 editBoard(row, col, String(i));
-                await sleep(100); // Pause for 1/2 second
+                await sleep(pause); // Pause for 1/2 second
 
                 // check if the next square was able to be filled (only then may this square keep its value)
                 // this happens for every square until eventually all of them have been filled, hitting the base case at the start
-                if (!(await solve(row, col + 1))) {
-                    await sleep(100); // Pause for 1/2 second
+                if (!(await solve(row, col + 1,pause))) {
+                    await sleep(pause); // Pause for 1/2 second
                     editBoard(row, col, "_");
                 } else {
                     break;
@@ -224,11 +224,11 @@ function SudokuVisualizer(){
     }
 
     //method that sets up proper board display and calls the solve method
-    function trySolve(){
+    function trySolve(pause){
         if(fillSquares()){
         setstopFlag(false);
         toggleInputs();
-        solve(0,0);
+        solve(0,0,pause);
         }
     }
 
@@ -255,7 +255,8 @@ function SudokuVisualizer(){
         <br />
         <br />
         <button onClick={resetBoard}>Reset Board</button>
-        <button onClick={trySolve}>Start Solving</button>
+            <button onClick={() => trySolve(100)}>Start Solving Slowly(Shows Steps)</button>
+            <button onClick={() => trySolve(1)}>Start Solving Quickly(Speeds Through)</button>
         </div>
     )
 }
