@@ -25,13 +25,51 @@ function SudokuVisualizer(){
         ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
     ])
 
+    //function to reset the board
     function resetBoard(){
         for (let i = 0; i < board.length; ++i){
             for (let j = 0; j < board.length; ++j){
-                editBoard(i,j,"6");
+                editBoard(i,j,"_");
             }
         }
+        toggleOutputs();
         console.log(board);
+    }
+
+
+    //function to switch from inputs to outputs
+    function toggleInputs(){
+        const inputs = document.getElementsByClassName('grid-input');
+
+        for (let i = 0; i < inputs.length; i++) {
+            const element = inputs[i];
+                element.style.visibility = 'hidden';
+        }
+
+        const outputs = document.getElementsByClassName('grid-cell');
+
+        for (let j = 0; j < outputs.length; j++) {
+            const element = outputs[j];
+            element.style.visibility = 'visible';
+        }
+    }
+
+
+    //function to switch from outputs to inputs
+    function toggleOutputs(){
+        const inputs = document.getElementsByClassName('grid-input');
+
+        for (let i = 0; i < inputs.length; i++) {
+            const element = inputs[i];
+            element.style.visibility = 'visible';
+        }
+
+        const outputs = document.getElementsByClassName('grid-cell');
+
+        for (let j = 0; j < outputs.length; j++) {
+            const element = outputs[j];
+            element.style.visibility = 'hidden';
+        }
     }
 
     //function to updates all the intial squares bassed of user input
@@ -190,7 +228,7 @@ function SudokuVisualizer(){
         <br />
         <br />
         <button onClick={resetBoard}>Reset Board</button>
-        <button onClick={fillSquares}>Start Solving</button>
+        <button onClick={toggleInputs}>Start Solving</button>
         </div>
     )
 }

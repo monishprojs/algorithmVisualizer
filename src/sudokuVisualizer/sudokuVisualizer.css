@@ -1,8 +1,8 @@
 .grid-container {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  grid-gap: 10px;
-  width: 66.67vw; /* Set the width to roughly 2/3 of the viewport width */
+  grid-gap: 0px;
+  width: 50vw; /* Set the width to roughly 2/3 of the viewport width */
   margin: 0 auto; /* Center the grid container horizontally */
 }
 
@@ -21,5 +21,10 @@
 }
 
 .grid-cell{
+  flex: 1;
+  border: 1px solid black;
+  padding: 10px;
+  text-align: center;
   visibility: hidden;
 }
+
