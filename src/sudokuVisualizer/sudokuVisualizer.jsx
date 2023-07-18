@@ -37,7 +37,6 @@ function SudokuVisualizer(){
             }
         }
         toggleOutputs();
-        console.log(board);
     }
 
 
@@ -79,7 +78,7 @@ function SudokuVisualizer(){
     //function to updates all the intial squares bassed of user input
     function fillSquares(){
         resetBoard();
-        const cells = document.getElementsByClassName('grid-cell');
+        const cells = document.getElementsByClassName('grid-input');
         for (let i = 0; i < cells.length ; ++i){
                 let indices = cells[i].id.split(".");
                 if (cells[i].value > 0 && cells[i].value < 10){
@@ -91,9 +90,10 @@ function SudokuVisualizer(){
             }
         if (!checkValid()){
             alert("bad board");
+            return false;
         }
         else{
-            trySolve();
+            return true;
         }
         }
     
@@ -220,9 +220,11 @@ function SudokuVisualizer(){
 
     //method that sets up proper board display and calls the solve method
     function trySolve(){
+        if(fillSquares()){
         setstopFlag(false);
         toggleInputs();
         solve(0,0);
+        }
     }
 
     return(
