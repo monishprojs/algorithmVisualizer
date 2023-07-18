@@ -30,10 +30,14 @@ function SudokuVisualizer(){
 
     //function to reset the board
     function resetBoard(){
+        //stop all solve calls
         setstopFlag(true);
         for (let i = 0; i < board.length; ++i){
             for (let j = 0; j < board.length; ++j){
+                //set all board values back to default
                 editBoard(i,j,"_");
+                //change back all the colors
+                document.getElementById(String(i) + "," + String(j)).style.backgroundColor = "white";
             }
         }
         toggleOutputs();
@@ -82,6 +86,7 @@ function SudokuVisualizer(){
         for (let i = 0; i < cells.length ; ++i){
                 let indices = cells[i].id.split(".");
                 if (cells[i].value > 0 && cells[i].value < 10){
+                document.getElementById(String(indices[0])+","+String(indices[1])).style.backgroundColor = "lightgreen";
                 editBoard(indices[0],indices[1],cells[i].value)
                 }
                 else{
@@ -237,7 +242,7 @@ function SudokuVisualizer(){
                     {row.map((cell, columnIndex) => (   
                         <div>   
                         <input className='grid-input' key={`${rowIndex}.${columnIndex}`} id={`${rowIndex}.${columnIndex}`} type="text"/>
-                        <div className='grid-cell'>
+                            <div className='grid-cell' id={`${rowIndex},${columnIndex}`}>
                             {cell}
                         </div>
                         </div>  
