@@ -28,9 +28,10 @@ function SudokuVisualizer(){
     function resetBoard(){
         for (let i = 0; i < board.length; ++i){
             for (let j = 0; j < board.length; ++j){
-                editBoard(i,j,"_");
+                editBoard(i,j,"6");
             }
         }
+        console.log(board);
     }
 
     //function to updates all the intial squares bassed of user input
@@ -132,6 +133,8 @@ function SudokuVisualizer(){
 
     //method to solve the board
     function solve(row,col){
+        console.log(board);
+        //base case of having hit all the cells
         if (row > board.length - 1){
             return true;
         }
@@ -173,8 +176,13 @@ function SudokuVisualizer(){
         <div className='grid-container'>
             {board.map((row, rowIndex) => (
                 <div key={rowIndex} className="grid-row">
-                    {row.map((cell, columnIndex) => (        
-                        <input className='grid-cell' key={`${rowIndex}.${columnIndex}`} id={`${rowIndex}.${columnIndex}`} type="text"/>
+                    {row.map((cell, columnIndex) => (   
+                        <div>   
+                        <input className='grid-input' key={`${rowIndex}.${columnIndex}`} id={`${rowIndex}.${columnIndex}`} type="text"/>
+                        <div className='grid-cell'>
+                            {cell}
+                        </div>
+                        </div>  
                     ))}
                 </div>
             ))}
@@ -182,7 +190,7 @@ function SudokuVisualizer(){
         <br />
         <br />
         <button onClick={resetBoard}>Reset Board</button>
-        <button onClick={trySolve}>Start Solving</button>
+        <button onClick={fillSquares}>Start Solving</button>
         </div>
     )
 }

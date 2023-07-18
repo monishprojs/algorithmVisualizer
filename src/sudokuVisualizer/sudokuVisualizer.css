@@ -10,11 +10,16 @@
   display: flex;
 }
 
-.grid-cell {
+.grid-input {
   flex: 1;
   border: 1px solid black;
   padding: 10px;
   text-align: center;
   width: 100%; /* Fill the available width within the grid cell */
   height: 100%; /* Fill the available height within the grid cell */
+  visibility: visible;
+}
+
+.grid-cell{
+  visibility: hidden;
 }
