@@ -13,6 +13,9 @@ function SudokuVisualizer(){
         navigate("/sorting");
     }
 
+    //stopFlag used to stop async calls of solve method if user quits
+    const[stopFlag,setstopFlag] = useState(false);
+
     const [board,setBoard] = useState([
         ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
         ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
@@ -27,6 +30,7 @@ function SudokuVisualizer(){
 
     //function to reset the board
     function resetBoard(){
+        setstopFlag(true);
         for (let i = 0; i < board.length; ++i){
             for (let j = 0; j < board.length; ++j){
                 editBoard(i,j,"_");
@@ -89,13 +93,16 @@ function SudokuVisualizer(){
             alert("bad board");
         }
         else{
-            alert("good board");
+            trySolve();
         }
         }
     
 
     //function to edit a specific squares value in the board
     function editBoard(row,col,val){
+        if(!val){
+            return;
+        }
         if ((val > 0 && val < 10) || val === "_"){
         let tmp = [...board];
         tmp[row][col] =  val;
@@ -153,8 +160,8 @@ function SudokuVisualizer(){
         //check squares
         let rowstart = (Math.floor((row / 3))) * 3;
         let colstart = (Math.floor((col / 3))) * 3;
-        for (let i = 0; i < rowstart +3 ; ++ i){
-            for (let j = 0; j < colstart + 3; ++j){
+        for (let i = rowstart; i < rowstart +3 ; ++ i){
+            for (let j = colstart; j < colstart + 3; ++j){
                 if (board[i][j] === val){
                     return false;
                 }
@@ -164,47 +171,58 @@ function SudokuVisualizer(){
         return true
     }
 
-    function trySolve(){
-        solve(0,0);
-        console.log(board);
+    //function to pause the sudoku solver
+    function sleep(duration) {
+        return new Promise(resolve => setTimeout(resolve, duration));
     }
 
+
     //method to solve the board
-    function solve(row,col){
-        console.log(board);
-        //base case of having hit all the cells
-        if (row > board.length - 1){
+    async function solve(row, col) {
+        if (stopFlag) {
+            return; // Stop the solver if the flag is set
+        }
+        // base case of having hit all the cells
+        if (row > board.length - 1) {
             return true;
         }
-        //advance a row once you've hit all the columns
-        if (col > board[0].length - 1){
+        // advance a row once you've hit all the columns
+        if (col > board[0].length - 1) {
             return solve(row + 1, 0);
         }
-        //jump to the next square if the square is a pre - filled square
-        if (board[row][col] !== "_"){
+        // jump to the next square if the square is a pre-filled square
+        if (board[row][col] !== "_") {
             return solve(row, col + 1);
         }
-        //check through all the values and see if they can be inserted
-        for (let i = 1; i < 10; ++ i){
-            if (checkVal(row, col, String(i))){
-                editBoard(row,col,String(i));
-                // check if the next square was able to filled(only then may this square keep its value)
-                // this happens for every square till eventually all of them have been filled, hitting the base case at the start
-                if (!solve(row, col + 1)){
+        // check through all the values and see if they can be inserted
+        for (let i = 1; i < 10; ++i) {
+            if (checkVal(row, col, String(i))) {
+                editBoard(row, col, String(i));
+                await sleep(100); // Pause for 1/2 second
+
+                // check if the next square was able to be filled (only then may this square keep its value)
+                // this happens for every square until eventually all of them have been filled, hitting the base case at the start
+                if (!(await solve(row, col + 1))) {
+                    await sleep(100); // Pause for 1/2 second
                     editBoard(row, col, "_");
-                }
-                else{
+                } else {
                     break;
-                    }
                 }
             }
-        // if square was unable to be filled return False
+        }
+        // if square was unable to be filled, return false
         if (board[row][col] === "_") {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
+    }
+
+    //method that sets up proper board display and calls the solve method
+    function trySolve(){
+        setstopFlag(false);
+        toggleInputs();
+        solve(0,0);
     }
 
     return(
@@ -227,8 +245,10 @@ function SudokuVisualizer(){
         </div>
         <br />
         <br />
+        <br />
+        <br />
         <button onClick={resetBoard}>Reset Board</button>
-        <button onClick={toggleInputs}>Start Solving</button>
+        <button onClick={trySolve}>Start Solving</button>
         </div>
     )
 }
