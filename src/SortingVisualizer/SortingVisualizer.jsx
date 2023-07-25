@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import getMergeSortAnimations from '../sortingAlgorithms/mergeSort.js';
 import getQuickSortAnimations from '../sortingAlgorithms/quickSort.js';
 import getHeapSortAnimations from '../sortingAlgorithms/heapSort.js';
+import getBubbleSortAnimations from '../sortingAlgorithms/bubbleSort';
 import { useNavigate } from "react-router-dom";
 
 function SortingVisualizer(){
@@ -32,7 +33,14 @@ function SortingVisualizer(){
         setNums(tmp)
     }
 
-    function mergeSort(){
+
+    //function to pause the sorting solver
+    function sleep(duration) {
+        return new Promise(resolve => setTimeout(resolve, duration));
+    }
+
+    //function to run merge sort
+    function mergeSort() {
         const animations = getMergeSortAnimations(nums);
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('bar');
@@ -56,16 +64,30 @@ function SortingVisualizer(){
         }
     }
 
-    function quickSort() {
-        const ans = getQuickSortAnimations([...nums])
+    //function to run bubble, heap, and quick sort
+    async function getSortAnimations(type) {
+        console.log(nums);
+        let ans = []
+        if (type === 'quick'){
+        ans = getQuickSortAnimations(nums);
+        }
+        else if (type === 'heap'){
+            ans = getHeapSortAnimations(nums);
+        }
+        else if (type === 'bubble'){
+            ans = getBubbleSortAnimations(nums);
+        }
+        else{
+            return;
+        }
         const sorted = ans[0];
         const animations = ans[1];
-        console.log(sorted);
         console.log(animations);
+        console.log(sorted);
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('bar');
 
-            //odd indices in animations mean they are to be highlighted, even means their heights are to be switched and colors to return back to normal
+            //odd indices in animations means to highlight them to show which indices are being compared, even means to swap heights
             const isColorChange = i % 2;
 
             //case where we are comparing them to swap, so we highlight them in red
@@ -73,55 +95,26 @@ function SortingVisualizer(){
                 const [barOneIdx, barTwoIdx] = animations[i];
                 const barOneStyle = arrayBars[barOneIdx].style;
                 const barTwoStyle = arrayBars[barTwoIdx].style;
-                const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
-                setTimeout(() => {
-                    barOneStyle.backgroundColor = color;
-                    barTwoStyle.backgroundColor = color;
-                }, i * ANIMATION_SPEED_MS);
+                barOneStyle.backgroundColor = SECONDARY_COLOR;
+                barTwoStyle.backgroundColor = SECONDARY_COLOR;
+                await sleep(ANIMATION_SPEED_MS);
+                //remove highlight after a delay
+                barOneStyle.backgroundColor = PRIMARY_COLOR;
+                barTwoStyle.backgroundColor = PRIMARY_COLOR;
+
             } 
-            //now we swap their hights and unhighlight them
+            //in this case we swap their heights in the ui
             else {
-                setTimeout(() => {
-                    const [barOneIdx, newHeight] = animations[i];
-                    const barOneStyle = arrayBars[barOneIdx].style;
-                    barOneStyle.height = `${newHeight}px`;
-                }, i * ANIMATION_SPEED_MS);
-            }
-        }
-    }
-
-    function heapSort() {
-        const animations = getHeapSortAnimations([...nums])
-        for (let i = 0; i < animations.length; i++) {
-            const arrayBars = document.getElementsByClassName('bar');
-
-            //odd indices in animations mean they are to be highlighted, even means their heights are to be switched and colors to return back to normal
-            const isColorChange = i % 3 !== 2;
-
-            //case where we are comparing them to swap, so we highlight them in red
-            if (isColorChange) {
                 const [barOneIdx, barTwoIdx] = animations[i];
                 const barOneStyle = arrayBars[barOneIdx].style;
                 const barTwoStyle = arrayBars[barTwoIdx].style;
-                const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
-                setTimeout(() => {
-                    barOneStyle.backgroundColor = color;
-                    barTwoStyle.backgroundColor = color;
-                }, i * ANIMATION_SPEED_MS);
-            }
-            //now we swap their hights and unhighlight them
-            else {
-                setTimeout(() => {
-                    const [barOneIdx, newHeight] = animations[i];
-                    const barOneStyle = arrayBars[barOneIdx].style;
-                    barOneStyle.height = `${newHeight}px`;
-                }, i * ANIMATION_SPEED_MS);
+                let tmp = barOneStyle.height;
+                barOneStyle.height = barTwoStyle.height;
+                barTwoStyle.height = tmp;
+                await sleep(ANIMATION_SPEED_MS);
+      
             }
         }
-    }
-
-    function bubbleSort() {
-
     }
 
     useEffect(() => {
@@ -142,10 +135,10 @@ function SortingVisualizer(){
             ))}
             <br />
             <button onClick={resetArray}>Try New Array</button>
-            <button onClick={mergeSort}>Merge Sort</button>
-            <button onClick={quickSort}>Quick Sort</button>
-            <button onClick={heapSort}>Heap Sort</button>
-            <button onClick={bubbleSort}>Bubble Sort</button>
+            <button onClick={() => mergeSort()}>Merge Sort</button>
+            <button onClick={() => getSortAnimations('quick')}>Quick Sort</button>
+            <button onClick={() => getSortAnimations('heap')}>Heap Sort</button>
+                <button onClick={() => getSortAnimations('bubble')}>Bubble Sort</button>
             </div>
             
         )
