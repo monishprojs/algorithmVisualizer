@@ -1,6 +1,6 @@
 import React from 'react';
 import './sudokuVisualizer.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 
 function SudokuVisualizer(){
@@ -14,8 +14,18 @@ function SudokuVisualizer(){
     }
 
     //stopFlag used to stop async calls of solve method if user quits
-    const[stopFlag,setstopFlag] = useState(false);
+    const[stopFlag,setStopFlag] = useState(false);
 
+    //mutable reference
+    const stopFlagRef = useRef(false);
+
+    //animations array obtained from solve method used to store animations to play
+    // const [animations, setAnimations] = useState([5]);
+
+    let animations = [];
+
+
+    //sudoku board
     const [board,setBoard] = useState([
         ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
         ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
@@ -28,10 +38,13 @@ function SudokuVisualizer(){
         ["_", "_", "_", "_", "_", "_", "_", "_", "_"],
     ])
 
-    //function to reset the board
+    //function to completely reset the board
     function resetBoard(){
         //stop all solve calls
-        setstopFlag(true);
+        setStopFlag(false);
+        stopFlagRef.current = true;
+        //reset animations
+        animations = [];
         for (let i = 0; i < board.length; ++i){
             for (let j = 0; j < board.length; ++j){
                 //set all board values back to default
@@ -41,6 +54,17 @@ function SudokuVisualizer(){
             }
         }
         toggleOutputs();
+    }
+
+    //function to undo changes done to baord by solution
+    function undoSolution(){
+        for (let i = 0; i < board.length; ++i) {
+            for (let j = 0; j < board.length; ++j) {
+                if (document.getElementById(String(i) + "," + String(j)).style.backgroundColor !== "lightgreen"){
+                    editBoard(i,j,"_");
+                }
+            }
+        }
     }
 
 
@@ -103,6 +127,13 @@ function SudokuVisualizer(){
         }
     
 
+    //function to pause sudoku solver
+    function stop(){
+        setStopFlag(false);
+        stopFlagRef.current = true;
+    }
+
+
     //function to edit a specific squares value in the board
     function editBoard(row,col,val){
         if(!val){
@@ -113,6 +144,22 @@ function SudokuVisualizer(){
         tmp[row][col] =  val;
         setBoard(tmp);
         }
+    }
+
+    //fucntion to edit the board ui in react native
+    async function printAnimations(pause){
+        setStopFlag(true);
+        stopFlagRef.current = false;
+
+        for (let i = 0; i < animations.length; ++i){
+            console.log(stopFlagRef.current);
+            if (stopFlagRef.current){
+                return;
+            }
+            editBoard(animations[i][0],animations[i][1],animations[i][2]);
+            await sleep(pause);
+        }
+        setStopFlag(false);
     }
 
     // method to check iv whole board is valid
@@ -183,33 +230,30 @@ function SudokuVisualizer(){
 
 
     //method to solve the board
-    async function solve(row, col, pause) {
-        if (stopFlag) {
-            return; // Stop the solver if the flag is set
-        }
+    function solve(row, col) {
         // base case of having hit all the cells
         if (row > board.length - 1) {
             return true;
         }
         // advance a row once you've hit all the columns
         if (col > board[0].length - 1) {
-            return solve(row + 1, 0,pause);
+            return solve(row + 1, 0);
         }
         // jump to the next square if the square is a pre-filled square
         if (board[row][col] !== "_") {
-            return solve(row, col + 1,pause);
+            return solve(row, col + 1);
         }
         // check through all the values and see if they can be inserted
         for (let i = 1; i < 10; ++i) {
             if (checkVal(row, col, String(i))) {
                 editBoard(row, col, String(i));
-                await sleep(pause); // Pause for 1/2 second
+                animations.push([row,col,String(i)]);
 
                 // check if the next square was able to be filled (only then may this square keep its value)
                 // this happens for every square until eventually all of them have been filled, hitting the base case at the start
-                if (!(await solve(row, col + 1,pause))) {
-                    await sleep(pause); // Pause for 1/2 second
+                if (!solve(row, col + 1)) {
                     editBoard(row, col, "_");
+                    animations.push([row, col, "_"]);
                 } else {
                     break;
                 }
@@ -226,9 +270,12 @@ function SudokuVisualizer(){
     //method that sets up proper board display and calls the solve method
     function trySolve(pause){
         if(fillSquares()){
-        setstopFlag(false);
+        setStopFlag(false);
         toggleInputs();
-        solve(0,0,pause);
+        solve(0,0);
+        console.log(animations);
+        undoSolution();
+        printAnimations(pause);
         }
     }
 
@@ -257,6 +304,7 @@ function SudokuVisualizer(){
         <button onClick={resetBoard}>Reset Board</button>
             <button onClick={() => trySolve(100)}>Start Solving Slowly(Shows Steps)</button>
             <button onClick={() => trySolve(1)}>Start Solving Quickly(Speeds Through)</button>
+            <button onClick={() => stop()}>Stop</button>
         </div>
     )
 }
