@@ -5,8 +5,11 @@
 }
 
 .bar{
-    width: 7px;
     background-color: lightblue;
     display: inline-block;
     margin: 0 1px;
+}
+
+.map{
+    width: 100%;
 }

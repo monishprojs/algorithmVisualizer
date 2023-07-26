@@ -6,6 +6,7 @@ import getQuickSortAnimations from '../sortingAlgorithms/quickSort.js';
 import getHeapSortAnimations from '../sortingAlgorithms/heapSort.js';
 import getBubbleSortAnimations from '../sortingAlgorithms/bubbleSort';
 import { useNavigate } from "react-router-dom";
+import Slider from '../slider';
 
 function SortingVisualizer(){
 
@@ -19,15 +20,23 @@ function SortingVisualizer(){
         navigate("/sudoku");
     }
 
-    const[nums,setNums] = useState([])
+    const[nums,setNums] = useState([]);
+    const [sliderValue, setSliderValue] = useState(100);
 
     const PRIMARY_COLOR = 'lightblue';
     const SECONDARY_COLOR = 'red';
     const ANIMATION_SPEED_MS = 10;
+
+    const labels = Array.from({ length: 10 }, (_, index) => ({
+        value: (index + 1) * 10,
+        label: ((index + 1) * 10).toString(),
+    }));
+    const labelStep = 1;
+
     
-    function resetArray(){
+    function resetArray(cap){
         let tmp = [];
-        for (let i = 0; i < 100; i ++){
+        for (let i = 0; i < cap; i ++){
             tmp.push(Math.floor(Math.random() * 300))
         }
         setNums(tmp)
@@ -117,24 +126,45 @@ function SortingVisualizer(){
         }
     }
 
+    const handleSliderChange = (value) => {
+        setSliderValue(value);
+        console.log(value);
+        resetArray(value);
+    };
+
     useEffect(() => {
-        resetArray()
+        resetArray(100)
     }, [])
   
+
+
         return (
             <div className='container'>
                 <button onClick={goSearch}>Binary Search</button>
                 <button onClick={goSudoku}>Sudoku Solver</button>
+                <div>
+                    <Slider
+                        min={10}
+                        max={100}
+                        step={1}
+                        value={sliderValue}
+                        onChange={handleSliderChange}
+                        labels={labels}
+                        labelStep={labelStep}
+                    />
+                </div>
                 <br />
+            <div className='map'>
             {nums.map((value,index) => (
                 <div className='bar' 
                 key={index}
-                style={{height: String(value)+'px'}}>
+                style={{height: String(value)+'px', width:String(700/sliderValue)+'px'}}>
                     
                 </div>
             ))}
+            </div>
             <br />
-            <button onClick={resetArray}>Try New Array</button>
+            <button onClick={() => resetArray(sliderValue)}>Try New Array</button>
             <button onClick={() => mergeSort()}>Merge Sort</button>
             <button onClick={() => getSortAnimations('quick')}>Quick Sort</button>
             <button onClick={() => getSortAnimations('heap')}>Heap Sort</button>
