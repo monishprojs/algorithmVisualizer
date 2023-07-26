@@ -83,7 +83,7 @@ function SearchingVisualizer(){
     }, [])
 
     return (
-        <div className='container'>
+        <div className='sortingContainer'>
             <NavBar></NavBar>
             <p>Result:</p>
             <p id='res'>{res}</p>
@@ -95,8 +95,11 @@ function SearchingVisualizer(){
                 </div>
             ))}
             <br />
-            <input type="text" id='toFind'/>
+            <br />
+            <input type="text" id='toFind' placeholder='Desired Number'/>
+            <br />
             <button onClick={search}> Start Search</button>
+            <br />
             <br />
             <button onClick={resetArray}>Try New Array</button>
         </div>

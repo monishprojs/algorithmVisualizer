@@ -17,8 +17,8 @@ function NavBar(){
     return (
         <div>
             <button onClick={goSort}>Sorting Algorithms</button>
-            <button onClick={goSearch}>Binary Search</button>
             <button onClick={goSudoku}>Sudoku Solver</button>
+            <button onClick={goSearch}>Binary Search</button>
         </div>
     )
 }
