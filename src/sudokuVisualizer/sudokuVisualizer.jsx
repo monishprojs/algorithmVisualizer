@@ -274,6 +274,7 @@ function SudokuVisualizer(){
     return(
         <div>
             <NavBar></NavBar>
+            <p>Input In A Sudoku Puzzle And Watch The Backtracking Algorithm Unfold</p>
         <div className='grid-container'>
             {board.map((row, rowIndex) => (
                 <div key={rowIndex} className="grid-row">

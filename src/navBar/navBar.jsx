@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
+import './navBar.css';
 
 function NavBar(){
 
@@ -15,7 +16,7 @@ function NavBar(){
     }
 
     return (
-        <div>
+        <div className='navBar'>
             <button onClick={goSort}>Sorting Algorithms</button>
             <button onClick={goSudoku}>Sudoku Solver</button>
             <button onClick={goSearch}>Binary Search</button>
