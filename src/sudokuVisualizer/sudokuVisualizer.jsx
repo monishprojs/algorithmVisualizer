@@ -42,7 +42,7 @@ function SudokuVisualizer(){
                 //set all board values back to default
                 editBoard(i,j,"_");
                 //change back all the colors
-                document.getElementById(String(i) + "," + String(j)).style.backgroundColor = "white";
+                document.getElementById(String(i) + "," + String(j)).style.backgroundColor = "lightblue";
             }
         }
         toggleOutputs();

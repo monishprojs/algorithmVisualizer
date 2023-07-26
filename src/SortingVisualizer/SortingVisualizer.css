@@ -1,7 +1,8 @@
 .container{
     position: absolute;
-    left : 20vw;
     bottom: 10vh;
+    background-color: darkgray;
+    width: 100%;
 }
 
 .bar{
