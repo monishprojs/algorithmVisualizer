@@ -5,21 +5,10 @@ import getMergeSortAnimations from '../sortingAlgorithms/mergeSort.js';
 import getQuickSortAnimations from '../sortingAlgorithms/quickSort.js';
 import getHeapSortAnimations from '../sortingAlgorithms/heapSort.js';
 import getBubbleSortAnimations from '../sortingAlgorithms/bubbleSort';
-import { useNavigate } from "react-router-dom";
+import NavBar from '../navBar/navBar';
 import Slider from '../slider';
 
 function SortingVisualizer(){
-
-    const navigate = useNavigate();
-
-    function goSearch() {
-        navigate("/searching");
-    }
-
-    function goSudoku(){
-        navigate("/sudoku");
-    }
-
     const[nums,setNums] = useState([]);
     const [sliderValue, setSliderValue] = useState(100);
 
@@ -140,8 +129,7 @@ function SortingVisualizer(){
 
         return (
             <div className='container'>
-                <button onClick={goSearch}>Binary Search</button>
-                <button onClick={goSudoku}>Sudoku Solver</button>
+                <NavBar></NavBar>
                 <div>
                     <Slider
                         min={10}

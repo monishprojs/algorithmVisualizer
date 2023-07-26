@@ -2,7 +2,8 @@
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   grid-gap: 0px;
-  width: 50vw; /* Set the width to roughly 2/3 of the viewport width */
+  width: 50vw;
+  height: auto;
   margin: 0 auto; /* Center the grid container horizontally */
 }
 
@@ -14,17 +15,20 @@
   flex: 1;
   border: 1px solid black;
   padding: 10px;
+  align-items: center;
   text-align: center;
-  width: 100%; /* Fill the available width within the grid cell */
-  height: 100%; /* Fill the available height within the grid cell */
+  width: 100%;
+  height: 100%;
   visibility: visible;
 }
 
 .grid-cell{
   flex: 1;
   border: 1px solid black;
-  padding: 10px;
+  align-items: center;
   text-align: center;
   visibility: hidden;
+  width: 100%;
+  height: 100%;
 }
 

@@ -1,17 +1,9 @@
 import React from 'react';
 import './sudokuVisualizer.css';
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from "react-router-dom";
+import NavBar from '../navBar/navBar';
 
 function SudokuVisualizer(){
-
-    const navigate = useNavigate();
-    function goSearch() {
-        navigate("/searching");
-    }
-    function goSort() {
-        navigate("/sorting");
-    }
 
     //stopFlag used to stop async calls of solve method if user quits
     const[stopFlag,setStopFlag] = useState(false);
@@ -281,8 +273,7 @@ function SudokuVisualizer(){
 
     return(
         <div>
-            <button onClick={goSort}>Sorting Algorithms</button>
-            <button onClick={goSearch}>Binary Search</button>
+            <NavBar></NavBar>
         <div className='grid-container'>
             {board.map((row, rowIndex) => (
                 <div key={rowIndex} className="grid-row">
@@ -297,6 +288,7 @@ function SudokuVisualizer(){
                 </div>
             ))}
         </div>
+        <br />
         <br />
         <br />
         <br />

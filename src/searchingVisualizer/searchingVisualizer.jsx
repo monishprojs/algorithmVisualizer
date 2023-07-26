@@ -1,20 +1,10 @@
 import React from 'react';
 import './searchingVisualizer.css';
 import { useEffect, useState } from 'react';
-import getMergeSortAnimations from '../sortingAlgorithms/mergeSort';
-import { useNavigate } from "react-router-dom";
+import getQuickSortAnimations from '../sortingAlgorithms/quickSort';
+import NavBar from '../navBar/navBar';
 
 function SearchingVisualizer(){
-    const navigate = useNavigate();
-
-    function goSort() {
-        navigate("/sorting");
-    }
-
-    function goSudoku(){
-        navigate("/sudoku");
-    }
-
     const [Sorted,setSorted] = useState([]);
     const [res,setRes] = useState("");
     const [left,setLeft] = useState("");
@@ -27,7 +17,8 @@ function SearchingVisualizer(){
         for (let i = 0; i < 15; i++) {
             tmp.push(Math.floor(Math.random() * 50))
         }
-        getMergeSortAnimations(tmp);
+        //sort the array
+        getQuickSortAnimations(tmp);
         setSorted(tmp);
     }
 
@@ -93,8 +84,7 @@ function SearchingVisualizer(){
 
     return (
         <div className='container'>
-            <button onClick={goSort}>Sorting Algorithms</button>
-            <button onClick={goSudoku}>Sudoku Solver</button>
+            <NavBar></NavBar>
             <p>Result:</p>
             <p id='res'>{res}</p>
             <p>Left Index: {left},  Mid Index: {mid}, Right Index: {right}</p>
