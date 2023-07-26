@@ -131,6 +131,7 @@ function SortingVisualizer(){
             <div className='container'>
                 <NavBar></NavBar>
                 <div>
+                    <p>Adjust The Size Of The Array</p>
                     <Slider
                         min={10}
                         max={100}
