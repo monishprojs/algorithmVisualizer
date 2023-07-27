@@ -5,6 +5,7 @@ import getMergeSortAnimations from '../sortingAlgorithms/mergeSort.js';
 import getQuickSortAnimations from '../sortingAlgorithms/quickSort.js';
 import getHeapSortAnimations from '../sortingAlgorithms/heapSort.js';
 import getBubbleSortAnimations from '../sortingAlgorithms/bubbleSort';
+import getInsertionSortAnimations from '../sortingAlgorithms/insertionSort';
 import NavBar from '../navBar/navBar';
 import Slider from '../slider';
 
@@ -74,6 +75,9 @@ function SortingVisualizer(){
         }
         else if (type === 'bubble'){
             ans = getBubbleSortAnimations(nums);
+        }
+        else if (type === 'insertion'){
+            ans = getInsertionSortAnimations(nums);
         }
         else{
             return;
@@ -152,12 +156,13 @@ function SortingVisualizer(){
                 </div>
             ))}
             </div>
-            <br />
-            <button onClick={() => resetArray(sliderValue)}>Try New Array</button>
-            <button onClick={() => mergeSort()}>Merge Sort</button>
-            <button onClick={() => getSortAnimations('quick')}>Quick Sort</button>
-            <button onClick={() => getSortAnimations('heap')}>Heap Sort</button>
+                <br />
+                <button onClick={() => resetArray(sliderValue)}>Try New Array</button>
+                <button onClick={() => mergeSort()}>Merge Sort</button>
+                <button onClick={() => getSortAnimations('quick')}>Quick Sort</button>
+                <button onClick={() => getSortAnimations('heap')}>Heap Sort</button>
                 <button onClick={() => getSortAnimations('bubble')}>Bubble Sort</button>
+                <button onClick={() => getSortAnimations('insertion')}>Insertion Sort</button>
             </div>
             
         )
