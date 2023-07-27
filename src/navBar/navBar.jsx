@@ -14,12 +14,16 @@ function NavBar(){
     function goSudoku(){
         navigate("/sudoku");
     }
+    function goPathfinding() {
+        navigate("/pathfinding");
+    }
 
     return (
         <div className='navBar'>
             <button onClick={goSort}>Sorting Algorithms</button>
             <button onClick={goSudoku}>Sudoku Solver</button>
             <button onClick={goSearch}>Binary Search</button>
+            <button onClick={goPathfinding}>Pathfinding Visualizer</button>
         </div>
     )
 }

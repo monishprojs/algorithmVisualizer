@@ -3,6 +3,7 @@ import './App.css';
 import SortingVisualizer from './SortingVisualizer/SortingVisualizer';
 import SearchingVisualizer from './searchingVisualizer/searchingVisualizer.jsx';
 import SudokuVisualizer from './sudokuVisualizer/sudokuVisualizer';
+import PathfindingVisualizer from './pathfindingVisualizer/pathfindingVisualizer';
 
 import {
   BrowserRouter as Router,
@@ -22,6 +23,8 @@ function App() {
           <Route path="/sorting" element={<SortingVisualizer/>} />
 
           <Route path="/sudoku" element={<SudokuVisualizer />} />
+
+          <Route path="/pathfinding" element={<PathfindingVisualizer />} />
 
           <Route path="/" element={<Navigate replace to="/sorting" />} />
         </Routes>
