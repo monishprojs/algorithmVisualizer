@@ -7,6 +7,17 @@
   background-color: white; 
 }
 
+/* color of a wall node */
 .node.wall {
   background-color: black;
+}
+
+/* color of a start node */
+.node.start {
+  background-color: green;
+}
+
+/* color of an end node */
+.node.end {
+  background-color: red;
 }

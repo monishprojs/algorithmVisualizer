@@ -52,7 +52,7 @@ function SearchingVisualizer(){
             squares[left].style.backgroundColor = "red";
             squares[right].style.backgroundColor = "red";
             squares[mid].style.backgroundColor = "orange";
-            await delay(2500);
+            await delay(1500);
             squares[left].style.backgroundColor = "lightblue";
             squares[right].style.backgroundColor = "lightblue";
             squares[mid].style.backgroundColor = "lightblue";

@@ -1,14 +1,14 @@
 import React from 'react';
 import './node.css'; 
 
-const Node = ({ isWall, position, onClick }) => {
+const Node = ({ nodeType, isWall, position, onClick }) => {
     const handleClick = () => {
         onClick(position);
     };
 
     return (
         <div
-            className={`node ${isWall ? 'wall' : ''}`}
+            className={`node ${nodeType} ${isWall ? 'wall' : ''}`}
             onClick={handleClick}
         ></div>
     );
