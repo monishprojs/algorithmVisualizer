@@ -21,3 +21,13 @@
 .node.end {
   background-color: red;
 }
+
+/* color of a visited node */
+.node.visited {
+  background-color: blue; 
+}
+
+/* color of a node in the shortest path */
+.node.shortest-path {
+  background-color: yellow; 
+}

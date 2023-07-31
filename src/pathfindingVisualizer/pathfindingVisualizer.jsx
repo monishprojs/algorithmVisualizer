@@ -12,8 +12,14 @@ function PathfindingVisualizer (){
     const [startNode, setStartNode] = useState({ row: 0, col: 0 });
     const [endNode, setEndNode] = useState({ row: 9, col: 19 });
 
-    //function create the intiial grid of nodes, all of them a normal non-wall nodes
-    function createInitialGrid (){
+    //function to delay time
+    function delay(duration) {
+        return new Promise(resolve => setTimeout(resolve, duration));
+    }
+
+
+    // Function to create the initial grid of nodes, all of them being normal non-wall nodes
+    function createInitialGrid() {
         const grid = [];
         for (let row = 0; row < ROWS; row++) {
             const currentRow = [];
@@ -21,15 +27,14 @@ function PathfindingVisualizer (){
                 const node = {
                     row,
                     col,
-                    isWall: false, 
+                    isWall: false,
                 };
                 currentRow.push(node);
             }
             grid.push(currentRow);
         }
-
         return grid;
-    };
+    }
 
     const handleNodeClick = (position) => {
         const { row, col } = position;
@@ -65,30 +70,207 @@ function PathfindingVisualizer (){
         }
     };
 
+    const visualizeAStar = async () => {
+        console.log("running a star");
+        const gridCopy = createGridCopy();
+        const startNodeCopy = gridCopy[startNode.row][startNode.col];
+        const endNodeCopy = gridCopy[endNode.row][endNode.col];
+        startNodeCopy.previousNode = null;
+
+        const visitedNodesInOrder = []; // To keep track of the order of visited nodes
+        const unvisitedNodes = [startNodeCopy]; // Initialize unvisitedNodes with the start node
+        startNodeCopy.isVisited = true; // Set isVisited to true for the start node
+
+        while (unvisitedNodes.length > 0) {
+            console.log("in a star loop");
+            console.log("Unvisited Nodes Count:", unvisitedNodes.length);
+            // Sort unvisitedNodes by distance from start node + heuristic distance to end node
+            sortUnvisitedNodesByDistance(unvisitedNodes, startNodeCopy, endNodeCopy);
+
+            const closestNode = unvisitedNodes.shift(); // Get the node with the shortest distance
+            if (closestNode.isWall) continue; // Skip walls
+
+            if (closestNode.distance === Infinity) {
+                // No valid path found
+                console.log("No valid path found!");
+                return visitedNodesInOrder; // Return an empty array instead of null
+            }
+
+            visitedNodesInOrder.push(closestNode);
+            console.log("Visiting node:", closestNode);
+
+            if (closestNode.row === endNodeCopy.row && closestNode.col === endNodeCopy.col) {
+                // Path found (compare row and col instead of object references)
+                setGrid(gridCopy); // Update the grid with visited nodes for visualization
+                return visitedNodesInOrder;
+            }
+
+            updateUnvisitedNeighbors(closestNode, gridCopy, unvisitedNodes); // Pass unvisitedNodes to the function
+            await delay(10); // Delay the loop by 10ms for visualization
+        }
+
+        return visitedNodesInOrder;
+    };
+
+
+
+
+    const createGridCopy = () => {
+        return grid.map((row) => row.map((node) => ({ ...node, isVisited: false }))); // Set isVisited to false
+    };
+
+
+    const getInitialUnvisitedNodes = (grid) => {
+        const unvisitedNodes = [];
+        for (const row of grid) {
+            for (const node of row) {
+                const copiedNode = { ...node };
+                copiedNode.distance = Infinity;
+                copiedNode.previousNode = null;
+                unvisitedNodes.push(copiedNode);
+            }
+        }
+        return unvisitedNodes;
+    };
+
+
+    const sortUnvisitedNodesByDistance = (unvisitedNodes, startNode, endNode) => {
+        console.log("Unsorted unvisitedNodes:", unvisitedNodes);
+        unvisitedNodes.sort(
+            (nodeA, nodeB) =>
+                nodeA.distance + heuristicDistance(nodeA, endNode) - (nodeB.distance + heuristicDistance(nodeB, endNode))
+        );
+        console.log("Sorted unvisitedNodes:", unvisitedNodes);
+    };
+
+    const heuristicDistance = (nodeA, nodeB) => {
+        // Manhattan distance as heuristic (can also use Euclidean distance)
+        return Math.abs(nodeA.row - nodeB.row) + Math.abs(nodeA.col - nodeB.col);
+    };
+
+    const updateUnvisitedNeighbors = (node, gridCopy, unvisitedNodes) => {
+        const neighbors = getNeighbors(node, gridCopy);
+        for (const neighbor of neighbors) {
+            if (!neighbor.isWall && !neighbor.isVisited) {
+                const newDistance = node.distance + 1;
+                if (newDistance < neighbor.distance) {
+                    neighbor.distance = newDistance;
+                    neighbor.previousNode = node;
+                }
+                neighbor.isVisited = true; // Set isVisited to true for neighbors added to unvisitedNodes
+                unvisitedNodes.push(neighbor); // Add the neighbor to unvisitedNodes if it's not already present
+            }
+        }
+    };
+
+
+    const getNeighbors = (node, grid) => {
+        const neighbors = [];
+        const { row, col } = node;
+        const numRows = grid.length;
+        const numCols = grid[0].length;
+
+        // Check top neighbor
+        if (row > 0 && !grid[row - 1][col].isWall) neighbors.push(grid[row - 1][col]);
+
+        // Check bottom neighbor
+        if (row < numRows - 1 && !grid[row + 1][col].isWall) neighbors.push(grid[row + 1][col]);
+
+        // Check left neighbor
+        if (col > 0 && !grid[row][col - 1].isWall) neighbors.push(grid[row][col - 1]);
+
+        // Check right neighbor
+        if (col < numCols - 1 && !grid[row][col + 1].isWall) neighbors.push(grid[row][col + 1]);
+
+        console.log(neighbors);
+        return neighbors;
+    };
+
+
+
+    const getShortestPath = (endNodeCopy) => {
+        const shortestPath = [];
+        let currentNode = endNodeCopy;
+        while (currentNode !== null) {
+            shortestPath.unshift(currentNode);
+            currentNode = currentNode.previousNode;
+        }
+        return shortestPath;
+    };
+
+    const visualizeAlgorithm = async() => {
+        if (!startNode || !endNode) {
+            alert("Please have a start node and an end node set!");
+            return;
+        }
+
+        const gridCopy = createGridCopy();
+        const endNodeCopy = gridCopy[endNode.row][endNode.col];
+
+        const visitedNodesInOrder = await visualizeAStar();
+
+        if (visitedNodesInOrder.length === 0) {
+            alert("No valid path found!");
+            return;
+        }
+
+        console.log("Visited Nodes: ", visitedNodesInOrder);
+        const shortestPath = getShortestPath(endNodeCopy);
+        console.log("Shortest Path: ", shortestPath);
+
+        // Highlight the visited nodes for visualization
+        for (let i = 0; i < visitedNodesInOrder.length; i++) {
+            setTimeout(() => {
+                const node = visitedNodesInOrder[i];
+                const { row, col } = node;
+                const nodeElement = document.getElementById(`node-${row}-${col}`);
+                if (nodeElement) {
+                    nodeElement.classList.add('visited'); // Add the 'visited' class to the node
+                }
+            }, 10 * i); // Adjust the delay as needed for visualization speed
+        }
+
+        // Highlight the shortest path for visualization
+        for (let i = 0; i < shortestPath.length; i++) {
+            setTimeout(() => {
+                const node = shortestPath[i];
+                const { row, col } = node;
+                const nodeElement = document.getElementById(`node-${row}-${col}`);
+                if (nodeElement) {
+                    nodeElement.classList.add('shortest-path'); // Add the 'shortest-path' class to the node
+                }
+            }, 10 * (i + visitedNodesInOrder.length)); // Adjust the delay for visualization speed
+        }
+    };
+
+
+
+
     return (
         <div className='visualizerContainer'>
             <NavBar></NavBar>
         <div className="visualizer">
-            {grid.map((row, rowIndex) => (
-                <div key={rowIndex} className="row">
-                    {row.map((node, colIndex) => (
-                        <Node
-                            key={`${rowIndex}-${colIndex}`}
-                            nodeType={
-                                rowIndex === startNode.row && colIndex === startNode.col
-                                    ? 'start'
-                                    : rowIndex === endNode.row && colIndex === endNode.col
-                                        ? 'end'
-                                        : 'normal'
-                            }
-                            isWall={node.isWall}
-                            position={{ row: rowIndex, col: colIndex }}
-                            onClick={handleNodeClick}
-                        />
-                    ))}
-                </div>
-            ))}
+                {grid.map((row, rowIndex) => (
+                    <div key={rowIndex} className="row">
+                        {row.map((node, colIndex) => (
+                            <Node
+                                key={`${rowIndex}-${colIndex}`}
+                                nodeType={
+                                    rowIndex === startNode.row && colIndex === startNode.col
+                                        ? 'start'
+                                        : rowIndex === endNode.row && colIndex === endNode.col
+                                            ? 'end'
+                                            : 'normal'
+                                }
+                                isWall={node.isWall}
+                                position={{ row: rowIndex, col: colIndex }}
+                                onClick={handleNodeClick}
+                            />
+                        ))}
+                    </div>
+                ))}
         </div>
+        <button onClick={visualizeAlgorithm}>Find Shortest Path</button>
         </div>
     );
 };
