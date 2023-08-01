@@ -24,7 +24,7 @@
 
 /* color of a visited node */
 .node.visited {
-  background-color: blue; 
+  background-color: turquoise; 
 }
 
 /* color of a node in the shortest path */

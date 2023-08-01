@@ -197,9 +197,6 @@ function PathfindingVisualizer (){
 
 
 
-
-
-
     const getNeighbors = (node, grid) => {
         const neighbors = [];
         const { row, col } = node;
@@ -286,6 +283,42 @@ function PathfindingVisualizer (){
         await animateNodes(shortestPath, 'shortest-path');
     };
 
+    //function to reset the grid
+    const resetGridColorsAndWalls = () => {
+        const updatedGrid = grid.map((row) =>
+            row.map((node) => {
+                if (
+                    (node.row !== startNode.row || node.col !== startNode.col) &&
+                    (node.row !== endNode.row || node.col !== endNode.col)
+                ) {
+                    return {
+                        ...node,
+                        isVisited: false,
+                        previousNode: null,
+                        distance: Infinity,
+                        isWall: false,
+                    };
+                } else {
+                    // Preserve the isVisited property of start and end nodes
+                    return {
+                        ...node,
+                        isWall: false,
+                        previousNode: null,
+                        distance: Infinity,
+                    };
+                }
+            })
+        );
+
+        // Clear the visited and shortest-path CSS classes
+        const nodes = document.querySelectorAll(".node");
+        nodes.forEach((node) => {
+            node.classList.remove("visited");
+            node.classList.remove("shortest-path");
+        });
+
+        setGrid(updatedGrid);
+    };
 
 
 
@@ -322,6 +355,7 @@ function PathfindingVisualizer (){
                 ))}
             </div>
             <button onClick={visualizeAlgorithm}>Find Shortest Path</button>
+            <button onClick={resetGridColorsAndWalls}>Reset the Grid</button>
         </div>
     );
 };
