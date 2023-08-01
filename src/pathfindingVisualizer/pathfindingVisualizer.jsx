@@ -10,7 +10,7 @@ function PathfindingVisualizer (){
     const COLS = 20;
     const [grid, setGrid] = useState(() => createInitialGrid());
     const [startNode, setStartNode] = useState({ row: 0, col: 0 });
-    const [endNode, setEndNode] = useState({ row: 9, col: 19 });
+    const [endNode, setEndNode] = useState({ row: 0, col: 2 });
 
     //function to delay time
     function delay(duration) {
@@ -28,6 +28,8 @@ function PathfindingVisualizer (){
                     row,
                     col,
                     isWall: false,
+                    distance: Infinity,    // Initialize distance to Infinity
+                    previousNode: null,    // Initialize previousNode to null
                 };
                 currentRow.push(node);
             }
@@ -35,6 +37,7 @@ function PathfindingVisualizer (){
         }
         return grid;
     }
+
 
     const handleNodeClick = (position) => {
         const { row, col } = position;
@@ -74,51 +77,63 @@ function PathfindingVisualizer (){
         console.log("running a star");
         const gridCopy = createGridCopy();
         const startNodeCopy = gridCopy[startNode.row][startNode.col];
+        startNodeCopy.distance = 0;
         const endNodeCopy = gridCopy[endNode.row][endNode.col];
         startNodeCopy.previousNode = null;
 
-        const visitedNodesInOrder = []; // To keep track of the order of visited nodes
-        const unvisitedNodes = [startNodeCopy]; // Initialize unvisitedNodes with the start node
-        startNodeCopy.isVisited = true; // Set isVisited to true for the start node
+        const visitedNodesInOrder = [];
+        const unvisitedNodes = [startNodeCopy];
+        startNodeCopy.isVisited = true;
+        await delay(10);
 
         while (unvisitedNodes.length > 0) {
             console.log("in a star loop");
             console.log("Unvisited Nodes Count:", unvisitedNodes.length);
-            // Sort unvisitedNodes by distance from start node + heuristic distance to end node
             sortUnvisitedNodesByDistance(unvisitedNodes, startNodeCopy, endNodeCopy);
 
-            const closestNode = unvisitedNodes.shift(); // Get the node with the shortest distance
-            if (closestNode.isWall) continue; // Skip walls
+            const closestNode = unvisitedNodes.shift();
+            if (closestNode.isWall) continue;
 
             if (closestNode.distance === Infinity) {
                 // No valid path found
                 console.log("No valid path found!");
-                return visitedNodesInOrder; // Return an empty array instead of null
+                setGrid(gridCopy); // Update the grid with visited nodes for visualization
+                return []; // Return an empty array instead of null
             }
 
             visitedNodesInOrder.push(closestNode);
             console.log("Visiting node:", closestNode);
 
             if (closestNode.row === endNodeCopy.row && closestNode.col === endNodeCopy.col) {
-                // Path found (compare row and col instead of object references)
+                // Path found
+                console.log("Path found!");
                 setGrid(gridCopy); // Update the grid with visited nodes for visualization
                 return visitedNodesInOrder;
             }
 
-            updateUnvisitedNeighbors(closestNode, gridCopy, unvisitedNodes); // Pass unvisitedNodes to the function
-            await delay(10); // Delay the loop by 10ms for visualization
+            updateUnvisitedNeighbors(closestNode, gridCopy, unvisitedNodes);
+            await delay(10);
         }
 
-        return visitedNodesInOrder;
+        console.log("No valid path found!");
+        return []; // Return an empty array instead of null
     };
+
+
+
 
 
 
 
     const createGridCopy = () => {
-        return grid.map((row) => row.map((node) => ({ ...node, isVisited: false }))); // Set isVisited to false
+        return grid.map((row) =>
+            row.map((node) => ({
+                ...node,
+                isVisited: false,
+                previousNode: null,
+            }))
+        );
     };
-
 
     const getInitialUnvisitedNodes = (grid) => {
         const unvisitedNodes = [];
@@ -152,16 +167,24 @@ function PathfindingVisualizer (){
         const neighbors = getNeighbors(node, gridCopy);
         for (const neighbor of neighbors) {
             if (!neighbor.isWall && !neighbor.isVisited) {
-                const newDistance = node.distance + 1;
+                const newDistance = node.distance + 1; // Assuming the distance between adjacent nodes is 1
+
+                // Update the neighbor's distance and previousNode properties if the new distance is smaller
                 if (newDistance < neighbor.distance) {
                     neighbor.distance = newDistance;
                     neighbor.previousNode = node;
                 }
-                neighbor.isVisited = true; // Set isVisited to true for neighbors added to unvisitedNodes
-                unvisitedNodes.push(neighbor); // Add the neighbor to unvisitedNodes if it's not already present
+
+                // Add the neighbor to the unvisitedNodes array if it's not already present
+                if (!unvisitedNodes.includes(neighbor)) {
+                    unvisitedNodes.push(neighbor);
+                }
             }
         }
     };
+
+
+
 
 
     const getNeighbors = (node, grid) => {
@@ -182,23 +205,26 @@ function PathfindingVisualizer (){
         // Check right neighbor
         if (col < numCols - 1 && !grid[row][col + 1].isWall) neighbors.push(grid[row][col + 1]);
 
-        console.log(neighbors);
+        console.log("Neighbors for node:", node, neighbors);
         return neighbors;
     };
+
 
 
 
     const getShortestPath = (endNodeCopy) => {
         const shortestPath = [];
         let currentNode = endNodeCopy;
+        console.log("getting shortest path");
         while (currentNode !== null) {
+            console.log(currentNode)
             shortestPath.unshift(currentNode);
             currentNode = currentNode.previousNode;
         }
         return shortestPath;
     };
 
-    const visualizeAlgorithm = async() => {
+    const visualizeAlgorithm = async () => {
         if (!startNode || !endNode) {
             alert("Please have a start node and an end node set!");
             return;
@@ -207,7 +233,7 @@ function PathfindingVisualizer (){
         const gridCopy = createGridCopy();
         const endNodeCopy = gridCopy[endNode.row][endNode.col];
 
-        const visitedNodesInOrder = await visualizeAStar();
+        const visitedNodesInOrder = await visualizeAStar(); // Await the result of visualizeAStar()
 
         if (visitedNodesInOrder.length === 0) {
             alert("No valid path found!");
@@ -220,28 +246,27 @@ function PathfindingVisualizer (){
 
         // Highlight the visited nodes for visualization
         for (let i = 0; i < visitedNodesInOrder.length; i++) {
-            setTimeout(() => {
-                const node = visitedNodesInOrder[i];
-                const { row, col } = node;
-                const nodeElement = document.getElementById(`node-${row}-${col}`);
-                if (nodeElement) {
-                    nodeElement.classList.add('visited'); // Add the 'visited' class to the node
-                }
-            }, 10 * i); // Adjust the delay as needed for visualization speed
+            await delay(10); // Delay before highlighting the node
+            const node = visitedNodesInOrder[i];
+            const { row, col } = node;
+            const nodeElement = document.getElementById(`node-${row}-${col}`);
+            if (nodeElement) {
+                nodeElement.classList.add('visited'); // Add the 'visited' class to the node
+            }
         }
 
         // Highlight the shortest path for visualization
         for (let i = 0; i < shortestPath.length; i++) {
-            setTimeout(() => {
-                const node = shortestPath[i];
-                const { row, col } = node;
-                const nodeElement = document.getElementById(`node-${row}-${col}`);
-                if (nodeElement) {
-                    nodeElement.classList.add('shortest-path'); // Add the 'shortest-path' class to the node
-                }
-            }, 10 * (i + visitedNodesInOrder.length)); // Adjust the delay for visualization speed
+            await delay(10); // Delay before highlighting the node
+            const node = shortestPath[i];
+            const { row, col } = node;
+            const nodeElement = document.getElementById(`node-${row}-${col}`);
+            if (nodeElement) {
+                nodeElement.classList.add('shortest-path'); // Add the 'shortest-path' class to the node
+            }
         }
     };
+
 
 
 
