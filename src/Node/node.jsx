@@ -1,25 +1,27 @@
-import React from 'react';
-import './node.css'; 
+// Node.jsx
 
-const Node = ({ nodeType, isWall, distance, onClick, position }) => {
+import React from "react";
+import "./node.css";
+
+const Node = ({ nodeType, isWall, position, onClick, onMouseEnter }) => {
     const { row, col } = position;
 
-    let extraClassName = '';
-    if (nodeType === 'start') extraClassName = 'start';
-    else if (nodeType === 'end') extraClassName = 'end';
-    else if (isWall) extraClassName = 'wall';
+    const handleNodeClick = () => {
+        onClick({ row, col }, false);
+    };
+
+    const handleMouseEnter = () => {
+        onMouseEnter({ row, col });
+    };
 
     return (
         <div
             id={`node-${row}-${col}`}
-            className={`node ${extraClassName}`}
-            onClick={() => onClick(position)}
-        >
-            {/* Display the distance as content inside the node */}
-            {typeof distance === 'number' && <span className="distance-label">{distance}</span>}
-        </div>
+            className={`node ${nodeType}${isWall ? " wall" : ""}`}
+            onClick={handleNodeClick}
+            onMouseEnter={handleMouseEnter}
+        ></div>
     );
 };
-
 
 export default Node;

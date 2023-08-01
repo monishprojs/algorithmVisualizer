@@ -12,11 +12,64 @@ function PathfindingVisualizer (){
     const [startNode, setStartNode] = useState({ row: 0, col: 0 });
     const [endNode, setEndNode] = useState({ row: 0, col: 2 });
 
+    //state variable used to check if we are drawing a wall by dragging the mouse
+    const [isDrawingWall, setIsDrawingWall] = useState(false);
+
     //function to delay time
     function delay(duration) {
         return new Promise(resolve => setTimeout(resolve, duration));
     }
 
+
+    const handleMouseUp = () => {
+        console.log('Mouse Up');
+        setIsDrawingWall(false);
+    };
+
+
+    const handleNodeClick = (position, isDragging) => {
+        const { row, col } = position;
+
+        // Check if the clicked node is the start node or the end node
+        if (row === startNode.row && col === startNode.col) {
+            // remove start node
+            setStartNode({ row: -1, col: -1 });
+        } else if (row === endNode.row && col === endNode.col) {
+            // remove end node
+            setEndNode({ row: -1, col: -1 });
+        } else {
+            if (isDragging) {
+                // When dragging, toggle the node to be a wall
+                setGrid((prevGrid) => {
+                    const newGrid = prevGrid.map((rowNodes) =>
+                        rowNodes.map((node) =>
+                            node.row === row && node.col === col ? { ...node, isWall: true } : node
+                        )
+                    );
+                    return newGrid;
+                });
+            } else {
+                // When not dragging, set the start or end node
+                if (startNode.row === -1 && startNode.col === -1) {
+                    // Set as the new start node
+                    setStartNode({ row, col });
+                } else if (endNode.row === -1 && endNode.col === -1) {
+                    // Set as the new end node
+                    setEndNode({ row, col });
+                } else {
+                    // If both start and end nodes are set, toggle the node to be a wall
+                    setGrid((prevGrid) => {
+                        const newGrid = prevGrid.map((rowNodes) =>
+                            rowNodes.map((node) =>
+                                node.row === row && node.col === col ? { ...node, isWall: !node.isWall } : node
+                            )
+                        );
+                        return newGrid;
+                    });
+                }
+            }
+        }
+    };
 
     // Function to create the initial grid of nodes, all of them being normal non-wall nodes
     function createInitialGrid() {
@@ -37,41 +90,6 @@ function PathfindingVisualizer (){
         }
         return grid;
     }
-
-
-    const handleNodeClick = (position) => {
-        const { row, col } = position;
-
-        // Check if the clicked node is the start node or the end node
-        if (row === startNode.row && col === startNode.col) {
-            // remove start node
-            setStartNode({ row: -1, col: -1 });
-        } else if (row === endNode.row && col === endNode.col) {
-            // remove end node
-            setEndNode({ row: -1, col: -1 });
-        } else {
-            // Clicked on a normal node, updateif start node or end node is not set update them
-            if (startNode.row === -1 && startNode.col === -1) {
-                // Set as the new start node
-                setStartNode({ row, col });
-            } else if (endNode.row === -1 && endNode.col === -1) {
-                // Set as the new end node
-                setEndNode({ row, col });
-            } else {
-                // toggle a node to be a wall
-                setGrid((prevGrid) => {
-                    const newGrid = prevGrid.map((rowNodes) =>
-                        rowNodes.map((node) =>
-                            node.row === row && node.col === col
-                                ? { ...node, isWall: !node.isWall }
-                                : node
-                        )
-                    );
-                    return newGrid;
-                });
-            }
-        }
-    };
 
     const visualizeAStar = async () => {
         console.log("running a star");
@@ -116,10 +134,6 @@ function PathfindingVisualizer (){
         console.log("No valid path found!");
         return []; // Return an empty array instead of null
     };
-
-
-
-
 
 
 
@@ -269,9 +283,13 @@ function PathfindingVisualizer (){
 
 
     return (
-        <div className='visualizerContainer'>
-            <NavBar></NavBar>
-        <div className="visualizer">
+        <div className="visualizerContainer">
+            <NavBar />
+            <div
+                className="visualizer"
+                onMouseDown={() => setIsDrawingWall(true)}
+                onMouseUp={() => setIsDrawingWall(false)}
+            >
                 {grid.map((row, rowIndex) => (
                     <div key={rowIndex} className="row">
                         {row.map((node, colIndex) => (
@@ -279,20 +297,23 @@ function PathfindingVisualizer (){
                                 key={`${rowIndex}-${colIndex}`}
                                 nodeType={
                                     rowIndex === startNode.row && colIndex === startNode.col
-                                        ? 'start'
+                                        ? "start"
                                         : rowIndex === endNode.row && colIndex === endNode.col
-                                            ? 'end'
-                                            : 'normal'
+                                            ? "end"
+                                            : "normal"
                                 }
                                 isWall={node.isWall}
                                 position={{ row: rowIndex, col: colIndex }}
                                 onClick={handleNodeClick}
+                                onMouseEnter={(e) => {
+                                    if (isDrawingWall) handleNodeClick({ row: rowIndex, col: colIndex }, true);
+                                }}
                             />
                         ))}
                     </div>
                 ))}
-        </div>
-        <button onClick={visualizeAlgorithm}>Find Shortest Path</button>
+            </div>
+            <button onClick={visualizeAlgorithm}>Find Shortest Path</button>
         </div>
     );
 };
