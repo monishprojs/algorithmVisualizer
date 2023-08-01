@@ -84,7 +84,6 @@ function PathfindingVisualizer (){
         const visitedNodesInOrder = [];
         const unvisitedNodes = [startNodeCopy];
         startNodeCopy.isVisited = true;
-        await delay(10);
 
         while (unvisitedNodes.length > 0) {
             console.log("in a star loop");
@@ -112,7 +111,6 @@ function PathfindingVisualizer (){
             }
 
             updateUnvisitedNeighbors(closestNode, gridCopy, unvisitedNodes);
-            await delay(10);
         }
 
         console.log("No valid path found!");
