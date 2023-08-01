@@ -185,6 +185,7 @@ function PathfindingVisualizer (){
 
 
 
+
     const getNeighbors = (node, grid) => {
         const neighbors = [];
         const { row, col } = node;
@@ -229,7 +230,6 @@ function PathfindingVisualizer (){
         }
 
         const gridCopy = createGridCopy();
-        const endNodeCopy = gridCopy[endNode.row][endNode.col];
 
         const visitedNodesInOrder = await visualizeAStar(); // Await the result of visualizeAStar()
 
@@ -238,13 +238,15 @@ function PathfindingVisualizer (){
             return;
         }
 
+
         console.log("Visited Nodes: ", visitedNodesInOrder);
-        const shortestPath = getShortestPath(endNodeCopy);
+        //the last entry of visitedNodesInOrder is the end node
+        const shortestPath = getShortestPath(visitedNodesInOrder[visitedNodesInOrder.length - 1]);
         console.log("Shortest Path: ", shortestPath);
 
         // Highlight the visited nodes for visualization
         for (let i = 0; i < visitedNodesInOrder.length; i++) {
-            await delay(10); // Delay before highlighting the node
+            await delay(5); // Delay before highlighting the node
             const node = visitedNodesInOrder[i];
             const { row, col } = node;
             const nodeElement = document.getElementById(`node-${row}-${col}`);
@@ -255,7 +257,7 @@ function PathfindingVisualizer (){
 
         // Highlight the shortest path for visualization
         for (let i = 0; i < shortestPath.length; i++) {
-            await delay(10); // Delay before highlighting the node
+            await delay(5); // Delay before highlighting the node
             const node = shortestPath[i];
             const { row, col } = node;
             const nodeElement = document.getElementById(`node-${row}-${col}`);
