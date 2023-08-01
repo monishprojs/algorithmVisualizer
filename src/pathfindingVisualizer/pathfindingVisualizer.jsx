@@ -92,6 +92,13 @@ function PathfindingVisualizer (){
     }
 
     const visualizeAStar = async () => {
+
+        // Check if there is an end node set
+        if (startNode.row === -1 || startNode.col === -1 || endNode.row === -1 || endNode.col === -1) {
+            alert("Please have a start node and an end node set!");
+            return null;
+        }
+
         console.log("running a star");
         const gridCopy = createGridCopy();
         const startNodeCopy = gridCopy[startNode.row][startNode.col];
@@ -255,36 +262,9 @@ function PathfindingVisualizer (){
         }
     };
 
-    const visualizeAlgorithm = async () => {
-        if (!startNode || !endNode) {
-            alert("Please have a start node and an end node set!");
-            return;
-        }
-
-        const gridCopy = createGridCopy();
-
-        const visitedNodesInOrder = await visualizeAStar(); // Await the result of visualizeAStar()
-
-        if (visitedNodesInOrder.length === 0) {
-            alert("No valid path found!");
-            return;
-        }
-
-
-        console.log("Visited Nodes: ", visitedNodesInOrder);
-        //the last entry of visitedNodesInOrder is the end node
-        const shortestPath = getShortestPath(visitedNodesInOrder[visitedNodesInOrder.length - 1]);
-        console.log("Shortest Path: ", shortestPath);
-
-        // Highlight the visited nodes for visualization
-        await animateNodes(visitedNodesInOrder, 'visited');
-
-        // Highlight the shortest path for visualization
-        await animateNodes(shortestPath, 'shortest-path');
-    };
 
     //function to reset the grid
-    const resetGridColorsAndWalls = () => {
+    const resetGrid= () => {
         const updatedGrid = grid.map((row) =>
             row.map((node) => {
                 if (
@@ -318,6 +298,45 @@ function PathfindingVisualizer (){
         });
 
         setGrid(updatedGrid);
+    };
+
+    //general function for visualization that calls extraneous functions for actual logic
+    const visualizeAlgorithm = async () => {
+
+        if (!startNode || !endNode) {
+            alert("Please have a start node and an end node set!");
+            return;
+        }
+
+        resetGrid();
+
+        const gridCopy = createGridCopy();
+
+        const visitedNodesInOrder = await visualizeAStar(); // Await the result of visualizeAStar()
+
+        //case where start or end node not set
+        if (visitedNodesInOrder == null){
+            return
+        }
+
+
+        //case where there is no path
+        if (visitedNodesInOrder.length === 0) {
+            alert("No valid path found!");
+            return;
+        }
+
+
+        console.log("Visited Nodes: ", visitedNodesInOrder);
+        //the last entry of visitedNodesInOrder is the end node
+        const shortestPath = getShortestPath(visitedNodesInOrder[visitedNodesInOrder.length - 1]);
+        console.log("Shortest Path: ", shortestPath);
+
+        // Highlight the visited nodes for visualization
+        await animateNodes(visitedNodesInOrder, 'visited');
+
+        // Highlight the shortest path for visualization
+        await animateNodes(shortestPath, 'shortest-path');
     };
 
 
@@ -355,7 +374,7 @@ function PathfindingVisualizer (){
                 ))}
             </div>
             <button onClick={visualizeAlgorithm}>Find Shortest Path</button>
-            <button onClick={resetGridColorsAndWalls}>Reset the Grid</button>
+            <button onClick={resetGrid}>Reset the Grid</button>
         </div>
     );
 };
