@@ -244,6 +244,14 @@ function PathfindingVisualizer (){
             const { row, col } = node;
             const nodeElement = document.getElementById(`node-${row}-${col}`);
             if (nodeElement) {
+                // Skip changing class if it's the start or end node
+                if (
+                    (row === startNode.row && col === startNode.col) ||
+                    (row === endNode.row && col === endNode.col)
+                ) {
+                    continue;
+                }
+
                 nodeElement.classList.add(className); // Add the specified class to the node
                 await delay(5); // Delay before highlighting the next node
             }
