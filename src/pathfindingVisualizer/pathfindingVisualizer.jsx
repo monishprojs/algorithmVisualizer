@@ -15,6 +15,9 @@ function PathfindingVisualizer (){
     //state variable used to check if we are drawing a wall by dragging the mouse
     const [isDrawingWall, setIsDrawingWall] = useState(false);
 
+    //state variable to check if algorithm is running to prevent editing of board
+    const [isAlgorithmRunning, setIsAlgorithmRunning] = useState(false);
+
     //function to delay time
     function delay(duration) {
         return new Promise(resolve => setTimeout(resolve, duration));
@@ -28,6 +31,11 @@ function PathfindingVisualizer (){
 
 
     const handleNodeClick = (position, isDragging) => {
+
+        if (isAlgorithmRunning) {
+            return;
+        }
+
         const { row, col } = position;
 
         // Check if the clicked node is the start node or the end node
@@ -303,12 +311,15 @@ function PathfindingVisualizer (){
     //general function for visualization that calls extraneous functions for actual logic
     const visualizeAlgorithm = async () => {
 
+        resetGrid();
+
+        setIsAlgorithmRunning(true);
+
         if (!startNode || !endNode) {
             alert("Please have a start node and an end node set!");
+            setIsAlgorithmRunning(false);
             return;
         }
-
-        resetGrid();
 
         const gridCopy = createGridCopy();
 
@@ -316,13 +327,15 @@ function PathfindingVisualizer (){
 
         //case where start or end node not set
         if (visitedNodesInOrder == null){
-            return
+            setIsAlgorithmRunning(false);
+            return;
         }
 
 
         //case where there is no path
         if (visitedNodesInOrder.length === 0) {
             alert("No valid path found!");
+            setIsAlgorithmRunning(false);
             return;
         }
 
@@ -337,6 +350,8 @@ function PathfindingVisualizer (){
 
         // Highlight the shortest path for visualization
         await animateNodes(shortestPath, 'shortest-path');
+        
+        setIsAlgorithmRunning(false);
     };
 
 
