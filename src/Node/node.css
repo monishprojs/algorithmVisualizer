@@ -1,10 +1,12 @@
 .node {
-  width: 100%; 
-  height: 0;
+  width: 1.5vw; 
+  height: 1px;
   padding-bottom: 100%;
   border: 1px solid #ccc; 
   box-sizing: border-box; 
   background-color: white; 
+  /* add in a small transition for node color change */
+  transition: background-color 0.1s;
 }
 
 /* color of a wall node */

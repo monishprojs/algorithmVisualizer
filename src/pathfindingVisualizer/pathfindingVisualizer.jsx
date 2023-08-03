@@ -149,10 +149,6 @@ function PathfindingVisualizer (){
 
 
 
-
-
-
-
     const createGridCopy = () => {
         return grid.map((row) =>
             row.map((node) => ({
@@ -212,8 +208,6 @@ function PathfindingVisualizer (){
     };
 
 
-
-
     const getNeighbors = (node, grid) => {
         const neighbors = [];
         const { row, col } = node;
@@ -237,8 +231,6 @@ function PathfindingVisualizer (){
     };
 
 
-
-
     const getShortestPath = (endNodeCopy) => {
         const shortestPath = [];
         let currentNode = endNodeCopy;
@@ -253,6 +245,8 @@ function PathfindingVisualizer (){
 
 
     const animateNodes = async (nodes, className) => {
+        console.log("nodes:");
+        console.log(nodes);
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
             const { row, col } = node;
@@ -313,6 +307,7 @@ function PathfindingVisualizer (){
     //general function for visualization that calls extraneous functions for actual logic
     const visualizeAlgorithm = async () => {
 
+
         resetGrid();
 
         setIsAlgorithmRunning(true);
@@ -325,7 +320,6 @@ function PathfindingVisualizer (){
 
         const gridCopy = createGridCopy();
 
-        try{
         const visitedNodesInOrder = await visualizeAStar(); // Await the result of visualizeAStar()
         console.log(visitedNodesInOrder);
 
@@ -354,11 +348,7 @@ function PathfindingVisualizer (){
         await animateNodes(shortestPath, 'shortest-path');
         
         setIsAlgorithmRunning(false);
-        }
-        catch(error){
-            console.error("An error occurred during the algorithm:", error);
-            alert("An error occurred during the algorithm. Please check the console for more details.");
-        }
+        
     };
 
 
@@ -395,6 +385,7 @@ function PathfindingVisualizer (){
                     </div>
                 ))}
             </div>
+            <br />
             <button onClick={visualizeAlgorithm}>Find Shortest Path</button>
             <button onClick={resetGrid}>Reset the Grid</button>
         </div>

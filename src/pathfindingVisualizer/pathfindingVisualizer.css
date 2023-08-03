@@ -2,19 +2,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
   height: 100vh;
-  width: fit-content;
 }
-
 
 .visualizer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(20px, 1fr)); 
-  grid-gap: 1px; 
-  background-color: #ccc; 
-  width: fit-content; 
-  max-width: 80vw; 
-  padding: 10px; 
+  grid-template-columns: repeat(50, 1.5vw);
+  grid-template-rows: repeat(20, 1.5vw);
+  grid-gap: 1px;
+  background-color: #ccc;
+  width: fit-content;
+  padding: 10px;
   margin: auto;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  padding-bottom: 2%;
 }
