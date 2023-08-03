@@ -100,27 +100,22 @@ function PathfindingVisualizer (){
     }
 
     const visualizeAStar = async () => {
-
         // Check if there is an end node set
         if (startNode.row === -1 || startNode.col === -1 || endNode.row === -1 || endNode.col === -1) {
             alert("Please have a start node and an end node set!");
             return null;
         }
 
-        console.log("running a star");
         const gridCopy = createGridCopy();
         const startNodeCopy = gridCopy[startNode.row][startNode.col];
         startNodeCopy.distance = 0;
         const endNodeCopy = gridCopy[endNode.row][endNode.col];
-        startNodeCopy.previousNode = null;
 
         const visitedNodesInOrder = [];
         const unvisitedNodes = [startNodeCopy];
         startNodeCopy.isVisited = true;
 
         while (unvisitedNodes.length > 0) {
-            console.log("in a star loop");
-            console.log("Unvisited Nodes Count:", unvisitedNodes.length);
             sortUnvisitedNodesByDistance(unvisitedNodes, startNodeCopy, endNodeCopy);
 
             const closestNode = unvisitedNodes.shift();
@@ -130,7 +125,7 @@ function PathfindingVisualizer (){
                 // No valid path found
                 console.log("No valid path found!");
                 setGrid(gridCopy); // Update the grid with visited nodes for visualization
-                return []; // Return an empty array instead of null
+                return []; // Return an empty array to indicate no valid path is found
             }
 
             visitedNodesInOrder.push(closestNode);
@@ -143,12 +138,18 @@ function PathfindingVisualizer (){
                 return visitedNodesInOrder;
             }
 
+            //mark node as visited after we're done with it
+            closestNode.isVisited = true;
             updateUnvisitedNeighbors(closestNode, gridCopy, unvisitedNodes);
         }
 
         console.log("No valid path found!");
-        return []; // Return an empty array instead of null
+        return []; // Return an empty array to indicate no valid path is found
     };
+
+
+
+
 
 
 
@@ -193,7 +194,7 @@ function PathfindingVisualizer (){
     const updateUnvisitedNeighbors = (node, gridCopy, unvisitedNodes) => {
         const neighbors = getNeighbors(node, gridCopy);
         for (const neighbor of neighbors) {
-            if (!neighbor.isWall && !neighbor.isVisited) {
+            if (!neighbor.isVisited && !neighbor.isWall) {
                 const newDistance = node.distance + 1; // Assuming the distance between adjacent nodes is 1
 
                 // Update the neighbor's distance and previousNode properties if the new distance is smaller
@@ -209,6 +210,7 @@ function PathfindingVisualizer (){
             }
         }
     };
+
 
 
 
@@ -242,7 +244,7 @@ function PathfindingVisualizer (){
         let currentNode = endNodeCopy;
         console.log("getting shortest path");
         while (currentNode !== null) {
-            console.log(currentNode)
+            // console.log(currentNode)
             shortestPath.unshift(currentNode);
             currentNode = currentNode.previousNode;
         }
@@ -323,17 +325,17 @@ function PathfindingVisualizer (){
 
         const gridCopy = createGridCopy();
 
+        try{
         const visitedNodesInOrder = await visualizeAStar(); // Await the result of visualizeAStar()
+        console.log(visitedNodesInOrder);
 
         //case where start or end node not set
-        if (visitedNodesInOrder == null){
+        if (visitedNodesInOrder === null){
             setIsAlgorithmRunning(false);
             return;
         }
-
-
         //case where there is no path
-        if (visitedNodesInOrder.length === 0) {
+        else if (visitedNodesInOrder.length === 0) {
             alert("No valid path found!");
             setIsAlgorithmRunning(false);
             return;
@@ -352,6 +354,11 @@ function PathfindingVisualizer (){
         await animateNodes(shortestPath, 'shortest-path');
         
         setIsAlgorithmRunning(false);
+        }
+        catch(error){
+            console.error("An error occurred during the algorithm:", error);
+            alert("An error occurred during the algorithm. Please check the console for more details.");
+        }
     };
 
 
