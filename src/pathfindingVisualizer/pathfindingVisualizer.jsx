@@ -99,7 +99,7 @@ function PathfindingVisualizer (){
         return grid;
     }
 
-    const visualizeAStar = async () => {
+    const visualizeAStar = () => {
         // Check if there is an end node set
         if (startNode.row === -1 || startNode.col === -1 || endNode.row === -1 || endNode.col === -1) {
             alert("Please have a start node and an end node set!");
@@ -157,19 +157,6 @@ function PathfindingVisualizer (){
                 previousNode: null,
             }))
         );
-    };
-
-    const getInitialUnvisitedNodes = (grid) => {
-        const unvisitedNodes = [];
-        for (const row of grid) {
-            for (const node of row) {
-                const copiedNode = { ...node };
-                copiedNode.distance = Infinity;
-                copiedNode.previousNode = null;
-                unvisitedNodes.push(copiedNode);
-            }
-        }
-        return unvisitedNodes;
     };
 
 
@@ -317,8 +304,6 @@ function PathfindingVisualizer (){
             setIsAlgorithmRunning(false);
             return;
         }
-
-        const gridCopy = createGridCopy();
 
         const visitedNodesInOrder = await visualizeAStar(); // Await the result of visualizeAStar()
         console.log(visitedNodesInOrder);
