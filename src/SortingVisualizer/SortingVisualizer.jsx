@@ -132,9 +132,9 @@ function SortingVisualizer(){
 
 
         return (
-            <div className='container'>
+            <div className='sortingContainer'>
                 <NavBar></NavBar>
-                <div>
+                <div className='sortingContent'>
                     <p>Adjust The Size Of The Array</p>
                     <Slider
                         min={10}

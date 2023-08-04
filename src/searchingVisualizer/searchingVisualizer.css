@@ -1,9 +1,13 @@
-.sortingContainer{
-    position: absolute;
-    bottom: 30vh;
+.searchingContainer{
+    position: fixed;
+    top: 0;
     background-color: darkgray;
     width: 100%;
     height: auto;
+}
+
+.searchingContent{
+    margin-top: 30vh;
 }
 
 .square{

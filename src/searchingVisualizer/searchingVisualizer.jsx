@@ -83,8 +83,9 @@ function SearchingVisualizer(){
     }, [])
 
     return (
-        <div className='sortingContainer'>
+        <div className='searchingContainer'>
             <NavBar></NavBar>
+            <div className='searchingContent'>
             <p>Result:</p>
             <p id='res'>{res}</p>
             <p>Left Index: {left},  Mid Index: {mid}, Right Index: {right}</p>
@@ -102,6 +103,7 @@ function SearchingVisualizer(){
             <br />
             <br />
             <button onClick={resetArray}>Try New Array</button>
+            </div>
         </div>
 
     )
