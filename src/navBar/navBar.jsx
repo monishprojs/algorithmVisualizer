@@ -20,8 +20,8 @@ function NavBar(){
 
     return (
         <div className='navBar'>
-            <button onClick={goPathfinding}>Pathfinding Visualizer</button>
-            <button onClick={goSort}>Sorting Algorithms</button>
+            <button onClick={goPathfinding}>A* Pathfinding Visualizer</button>
+            <button onClick={goSort}>Array Sorting Algorithms</button>
             <button onClick={goSudoku}>Sudoku Solver</button>
             <button onClick={goSearch}>Binary Search</button>
         </div>

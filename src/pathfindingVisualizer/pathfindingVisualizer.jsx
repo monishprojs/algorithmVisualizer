@@ -29,7 +29,7 @@ function PathfindingVisualizer (){
 
 
     //function to handle certain actions if a node is clicked
-    const handleNodeClick = (position, isDragging) => {
+    function handleNodeClick (position, isDragging) {
 
         if (isAlgorithmRunning) {
             return;
@@ -37,7 +37,7 @@ function PathfindingVisualizer (){
 
         const { row, col } = position;
 
-        // Check if the clicked node is the start node or the end node
+        //Then Check if the clicked node is the start node or the end node
         if (row === startNode.row && col === startNode.col) {
             // remove start node
             setStartNode({ row: -1, col: -1 });
@@ -77,6 +77,7 @@ function PathfindingVisualizer (){
             }
         }
     };
+
 
 
     // Function to create the initial grid of nodes, all of them being normal non-wall nodes
@@ -158,7 +159,7 @@ function PathfindingVisualizer (){
     };
 
 
-    //function to creat a copy of the grid to be used during A* algorithm computations
+    //function to create a copy of the grid to be used during A* algorithm computations
     function createGridCopy() {
         const newGrid = [];
         for (let row = 0; row < ROWS; row++) {
@@ -353,6 +354,11 @@ function PathfindingVisualizer (){
     return (
         <div className="visualizerContainer">
             <NavBar />
+            <h3>Usage Guide:</h3>
+            <ul>
+                <li>You can change the start node and end nodes by clicking on them to toggle them off and then clicking on the new desired start/end node</li>
+                <li>You can also click on a node to toggle it as a wall (as long as start and end nodes are set), as well as drag the mouse over nodes to set many walls at a time</li>
+            </ul>
             <div
                 className="visualizer"
                 onMouseDown={() => setIsDrawingWall(true)}
