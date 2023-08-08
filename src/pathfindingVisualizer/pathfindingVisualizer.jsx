@@ -6,8 +6,11 @@ import NavBar from '../navBar/navBar';
 
 function PathfindingVisualizer (){
 
+    //variables for number of rows and columns
     const ROWS = 50;
     const COLS = 20;
+
+    //state variables for grid, as well as start and end nodes
     const [grid, setGrid] = useState(() => createInitialGrid());
     const [startNode, setStartNode] = useState({ row: 0, col: 0 });
     const [endNode, setEndNode] = useState({ row: 0, col: 2 });
@@ -24,12 +27,8 @@ function PathfindingVisualizer (){
     }
 
 
-    const handleMouseUp = () => {
-        console.log('Mouse Up');
-        setIsDrawingWall(false);
-    };
 
-
+    //function to handle certain actions if a node is clicked
     const handleNodeClick = (position, isDragging) => {
 
         if (isAlgorithmRunning) {
@@ -59,10 +58,10 @@ function PathfindingVisualizer (){
             } else {
                 // When not dragging, set the start or end node
                 if (startNode.row === -1 && startNode.col === -1) {
-                    // Set as the new start node
+                    // Set as the new start node if start node is not set
                     setStartNode({ row, col });
                 } else if (endNode.row === -1 && endNode.col === -1) {
-                    // Set as the new end node
+                    // Set as the new end node if end node is not set
                     setEndNode({ row, col });
                 } else {
                     // If both start and end nodes are set, toggle the node to be a wall
@@ -78,6 +77,7 @@ function PathfindingVisualizer (){
             }
         }
     };
+
 
     // Function to create the initial grid of nodes, all of them being normal non-wall nodes
     function createInitialGrid() {
@@ -99,14 +99,18 @@ function PathfindingVisualizer (){
         return grid;
     }
 
-    const visualizeAStar = () => {
-        // Check if there is an end node set
+    //function to actually walk through the A* algorithm and obtain a list of visited nodes
+    function visualizeAStar (){
+        // Check if there is both a start node and an end node set
         if (startNode.row === -1 || startNode.col === -1 || endNode.row === -1 || endNode.col === -1) {
             alert("Please have a start node and an end node set!");
             return null;
         }
 
+        //we use a grid copy for our computations as to not interfere with the original grid
         const gridCopy = createGridCopy();
+
+        //here we set up the start node copy and visitedNodesInOrder array for the rest of the algorithm
         const startNodeCopy = gridCopy[startNode.row][startNode.col];
         startNodeCopy.distance = 0;
         const endNodeCopy = gridCopy[endNode.row][endNode.col];
@@ -115,12 +119,17 @@ function PathfindingVisualizer (){
         const unvisitedNodes = [startNodeCopy];
         startNodeCopy.isVisited = true;
 
+        //loop through while we still have unvisited nodes
         while (unvisitedNodes.length > 0) {
             sortUnvisitedNodesByDistance(unvisitedNodes, startNodeCopy, endNodeCopy);
 
+            //get the closest node
             const closestNode = unvisitedNodes.shift();
+
+            //if a node is a wall we want to skip looking at it
             if (closestNode.isWall) continue;
 
+            //in the case of distance being inf, we know the end node is unreachable
             if (closestNode.distance === Infinity) {
                 // No valid path found
                 console.log("No valid path found!");
@@ -128,8 +137,10 @@ function PathfindingVisualizer (){
                 return []; // Return an empty array to indicate no valid path is found
             }
 
+            //if the node passes the above two checks we can add it to the array
             visitedNodesInOrder.push(closestNode);
 
+            //if the node is the end node we know that the algorithm is done
             if (closestNode.row === endNodeCopy.row && closestNode.col === endNodeCopy.col) {
                 // Path found
                 console.log("Path found!");
@@ -147,8 +158,8 @@ function PathfindingVisualizer (){
     };
 
 
-
-    const createGridCopy = () => {
+    //function to creat a copy of the grid to be used during A* algorithm computations
+    function createGridCopy() {
         const newGrid = [];
         for (let row = 0; row < ROWS; row++) {
             const newRow = [];
@@ -166,19 +177,22 @@ function PathfindingVisualizer (){
     };
 
 
-    const sortUnvisitedNodesByDistance = (unvisitedNodes, startNode, endNode) => {
+    //function to sort unvisited nodes using their distance property
+    function sortUnvisitedNodesByDistance (unvisitedNodes, startNode, endNode)  {
         unvisitedNodes.sort(
             (nodeA, nodeB) =>
                 nodeA.distance + heuristicDistance(nodeA, endNode) - (nodeB.distance + heuristicDistance(nodeB, endNode))
         );
     };
 
-    const heuristicDistance = (nodeA, nodeB) => {
-        // Manhattan distance as heuristic (can also use Euclidean distance)
+    //function to get distances between nodes
+    function heuristicDistance (nodeA, nodeB) {
+        // Manhattan distance as heuristic, as it is more accurate for A*
         return Math.abs(nodeA.row - nodeB.row) + Math.abs(nodeA.col - nodeB.col);
     };
 
-    const updateUnvisitedNeighbors = (node, gridCopy, unvisitedNodes) => {
+    //function to obtain predecessor nodes
+    function updateUnvisitedNeighbors (node, gridCopy, unvisitedNodes) {
         const neighbors = getNeighbors(node, gridCopy);
         for (const neighbor of neighbors) {
             if (!neighbor.isVisited && !neighbor.isWall) {
@@ -199,7 +213,8 @@ function PathfindingVisualizer (){
     };
 
 
-    const getNeighbors = (node, grid) => {
+    //function to get the neighbors of a node
+    function getNeighbors (node, grid) {
         const neighbors = [];
         const { row, col } = node;
         const numRows = grid.length;
@@ -221,7 +236,8 @@ function PathfindingVisualizer (){
     };
 
 
-    const getShortestPath = (endNodeCopy) => {
+    //function to obtain shortest path backtracking from the end node
+    function getShortestPath (endNodeCopy) {
         const shortestPath = [];
         let currentNode = endNodeCopy;
         while (currentNode !== null) {
@@ -232,7 +248,8 @@ function PathfindingVisualizer (){
     };
 
 
-    const animateNodes = async (nodes, className) => {
+    //async function that does the animation using array of nodes
+    async function animateNodes (nodes, className) {
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
             const { row, col } = node;
@@ -246,15 +263,15 @@ function PathfindingVisualizer (){
                     continue;
                 }
 
-                nodeElement.classList.add(className); // Add the specified class to the node
+                nodeElement.classList.add(className); // Add the specified class to the node (visited or shortest)
                 await delay(5); // Delay before highlighting the next node
             }
         }
     };
 
 
-    //function to reset the grid
-    const resetGrid= () => {
+    //function to reset the grid to a base state
+    function resetGrid() {
         const updatedGrid = grid.map((row) =>
             row.map((node) => {
                 if (
@@ -287,13 +304,13 @@ function PathfindingVisualizer (){
             node.classList.remove("shortest-path");
         });
 
+        //update the grid
         setGrid(updatedGrid);
     };
 
 
-
-    //general function for visualization that calls extraneous functions for actual logic
-    const visualizeAlgorithm = async () => {
+    //general function for visualization that calls prior functions for actual logic
+    async function visualizeAlgorithm () {
 
         resetGrid();
 
@@ -332,9 +349,6 @@ function PathfindingVisualizer (){
         setIsAlgorithmRunning(false);
         
     };
-
-
-
 
     return (
         <div className="visualizerContainer">
