@@ -37,7 +37,7 @@ function PathfindingVisualizer (){
 
         const { row, col } = position;
 
-        //Then Check if the clicked node is the start node or the end node
+        //Check if the clicked node is the start node or the end node
         if (row === startNode.row && col === startNode.col) {
             // remove start node
             setStartNode({ row: -1, col: -1 });
@@ -188,7 +188,7 @@ function PathfindingVisualizer (){
 
     //function to get distances between nodes
     function heuristicDistance (nodeA, nodeB) {
-        // Manhattan distance as heuristic, as it is more accurate for A*
+        //Manhattan distance as heuristic, as it is more accurate for A*
         return Math.abs(nodeA.row - nodeB.row) + Math.abs(nodeA.col - nodeB.col);
     };
 
