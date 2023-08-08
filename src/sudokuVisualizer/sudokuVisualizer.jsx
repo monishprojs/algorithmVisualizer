@@ -154,7 +154,7 @@ function SudokuVisualizer(){
         setStopFlag(false);
     }
 
-    // method to check iv whole board is valid
+    // method to check if whole board is valid
     function checkValid(){
     //dictionaries for each row, column, and square to check if values are unique
     let rows = {}

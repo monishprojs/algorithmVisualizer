@@ -129,7 +129,6 @@ function PathfindingVisualizer (){
             }
 
             visitedNodesInOrder.push(closestNode);
-            console.log("Visiting node:", closestNode);
 
             if (closestNode.row === endNodeCopy.row && closestNode.col === endNodeCopy.col) {
                 // Path found
@@ -150,23 +149,28 @@ function PathfindingVisualizer (){
 
 
     const createGridCopy = () => {
-        return grid.map((row) =>
-            row.map((node) => ({
-                ...node,
-                isVisited: false,
-                previousNode: null,
-            }))
-        );
+        const newGrid = [];
+        for (let row = 0; row < ROWS; row++) {
+            const newRow = [];
+            for (let col = 0; col < COLS; col++) {
+                newRow.push({
+                    ...grid[row][col],
+                    isVisited: false,
+                    previousNode: null,
+                    distance: Infinity,
+                });
+            }
+            newGrid.push(newRow);
+        }
+        return newGrid;
     };
 
 
     const sortUnvisitedNodesByDistance = (unvisitedNodes, startNode, endNode) => {
-        console.log("Unsorted unvisitedNodes:", unvisitedNodes);
         unvisitedNodes.sort(
             (nodeA, nodeB) =>
                 nodeA.distance + heuristicDistance(nodeA, endNode) - (nodeB.distance + heuristicDistance(nodeB, endNode))
         );
-        console.log("Sorted unvisitedNodes:", unvisitedNodes);
     };
 
     const heuristicDistance = (nodeA, nodeB) => {
@@ -213,7 +217,6 @@ function PathfindingVisualizer (){
         // Check right neighbor
         if (col < numCols - 1 && !grid[row][col + 1].isWall) neighbors.push(grid[row][col + 1]);
 
-        console.log("Neighbors for node:", node, neighbors);
         return neighbors;
     };
 
@@ -221,9 +224,7 @@ function PathfindingVisualizer (){
     const getShortestPath = (endNodeCopy) => {
         const shortestPath = [];
         let currentNode = endNodeCopy;
-        console.log("getting shortest path");
         while (currentNode !== null) {
-            // console.log(currentNode)
             shortestPath.unshift(currentNode);
             currentNode = currentNode.previousNode;
         }
@@ -232,8 +233,6 @@ function PathfindingVisualizer (){
 
 
     const animateNodes = async (nodes, className) => {
-        console.log("nodes:");
-        console.log(nodes);
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
             const { row, col } = node;
@@ -291,9 +290,10 @@ function PathfindingVisualizer (){
         setGrid(updatedGrid);
     };
 
+
+
     //general function for visualization that calls extraneous functions for actual logic
     const visualizeAlgorithm = async () => {
-
 
         resetGrid();
 
@@ -306,7 +306,7 @@ function PathfindingVisualizer (){
         }
 
         const visitedNodesInOrder = await visualizeAStar(); // Await the result of visualizeAStar()
-        console.log(visitedNodesInOrder);
+
 
         //case where start or end node not set
         if (visitedNodesInOrder === null){
@@ -320,11 +320,8 @@ function PathfindingVisualizer (){
             return;
         }
 
-
-        console.log("Visited Nodes: ", visitedNodesInOrder);
         //the last entry of visitedNodesInOrder is the end node
         const shortestPath = getShortestPath(visitedNodesInOrder[visitedNodesInOrder.length - 1]);
-        console.log("Shortest Path: ", shortestPath);
 
         // Highlight the visited nodes for visualization
         await animateNodes(visitedNodesInOrder, 'visited');
